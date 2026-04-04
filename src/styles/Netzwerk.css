@@ -1,0 +1,348 @@
+/* ── Seitenhintergrund ── */
+/* Schwarzer Grundton für die gesamte Netzwerk-Seite, passend zum Dark-Theme */
+.nw-page { background: var(--black); }
+
+/* ── Hero ── */
+/* Großer Einstiegsbereich mit zentriertem Text und animierten Hintergrund-Orbs */
+.nw-hero {
+  position: relative; min-height: 60vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 100px 22px 70px; overflow: hidden;
+}
+/* Hintergrund-Ebene für die Orbs – pointer-events: none damit Klicks durchgehen */
+.nw-hero-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+/* Basis-Klasse für beide Hintergrund-Orbs: kreisförmig, stark unscharf geblasen */
+.nw-orb { position: absolute; border-radius: 50%; filter: blur(100px); }
+
+/* Blauer Orb oben-links – schimmert sanft mit einem radialen Blau-Verlauf */
+.nw-orb-1 {
+  width: 520px; height: 520px; top: -10%; left: -8%;
+  background: radial-gradient(circle, rgba(41,151,255,0.12) 0%, transparent 65%);
+  animation: nwOrb1 18s ease-in-out infinite;
+}
+/* Lila Orb unten-rechts – ergänzt den blauen Orb mit violettem Gegen-Licht */
+.nw-orb-2 {
+  width: 420px; height: 420px; bottom: -10%; right: -5%;
+  background: radial-gradient(circle, rgba(110,60,255,0.09) 0%, transparent 65%);
+  animation: nwOrb2 22s ease-in-out infinite;
+}
+
+/* Orb 1 driftet leicht nach rechts-oben und zurück (18s-Zyklus) */
+@keyframes nwOrb1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,-20px)} }
+/* Orb 2 bewegt sich gegenläufig nach links-unten (22s-Zyklus, langsamerer Rhythmus) */
+@keyframes nwOrb2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,20px)} }
+
+/* Hero-Inhalt liegt über dem Hintergrund-Layer (z-index: 1) */
+.nw-hero-content { position: relative; z-index: 1; }
+
+/* Kleines Obertitel-Label ("NETZWERKTOPOLOGIEN") über dem Haupttitel */
+.nw-eyebrow {
+  font-size: 0.72rem; font-weight: 600; color: var(--accent);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 0.75rem; display: block;
+  /* Einflug-Animation mit 0.2s Verzögerung */
+  animation: nwUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+}
+
+/* Großer Seitentitel mit clamp() für flüssige Schriftgröße und Farbverlauf-Text */
+.nw-title {
+  font-size: clamp(3rem,10vw,7rem); font-weight: 700;
+  letter-spacing: -0.04em; line-height: 0.95;
+  /* Hellgrau → Blau Verlauf, per background-clip auf den Text beschnitten */
+  background: linear-gradient(135deg,#f5f5f7 30%,#2997ff 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 1.25rem;
+  animation: nwUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.4s both;
+}
+
+/* Untertitel-Absatz unterhalb des Haupttitels */
+.nw-sub {
+  font-size: clamp(0.95rem,2vw,1.1rem); color: var(--text-2);
+  line-height: 1.75; max-width: 520px; margin: 0 auto;
+  animation: nwUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.6s both;
+}
+
+/* Einflug von unten: Elemente starten bei opacity:0 und translateY(16px), enden sichtbar */
+@keyframes nwUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+
+/* Zeilenumbruch nur auf dem Desktop sichtbar – auf Mobilgeräten ausgeblendet (siehe @media) */
+.br-desk { display: inline; }
+
+/* ── Topology-Auswahlleiste ── */
+/* Horizontal scrollbare Leiste mit den sechs Topologie-Karten */
+.nw-topo-bar {
+  background: rgba(6,9,18,0.97);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 22px;
+  overflow-x: auto;
+}
+/* Innerer Flex-Container; min-width: max-content verhindert Umbruch der Karten */
+.nw-topo-scroll {
+  display: flex; gap: 0.75rem;
+  max-width: 960px; margin: 0 auto;
+  min-width: max-content;
+}
+
+/* Einzelne Topologie-Auswahlkarte (z.B. "Vollvermascht", "Ring" …) */
+.nw-topo-card {
+  display: flex; flex-direction: column; gap: 0.35rem;
+  padding: 0.85rem 1.1rem; min-width: 130px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px; cursor: pointer;
+  text-align: left; font-family: inherit;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  position: relative; overflow: hidden;
+}
+
+/* Shimmer-Streifen oben an der Karte.
+   --topo-color wird per inline-Style aus JSX gesetzt (z.B. #22c55e für Vollvermascht).
+   Im Ruhezustand unsichtbar (opacity: 0), bei Hover/aktiv eingeblendet. */
+.nw-topo-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--topo-color);
+  opacity: 0; transition: opacity 0.2s;
+}
+/* Hover-Zustand: leichte Aufhellung des Rahmens, minimales Hochheben */
+.nw-topo-card:hover { border-color: rgba(255,255,255,0.14); transform: translateY(-1px); }
+/* Beim Hover den Shimmer-Streifen halb sichtbar machen */
+.nw-topo-card:hover::before { opacity: 0.5; }
+
+/* Aktive (ausgewählte) Karte: Rahmen und Hintergrund in der jeweiligen Topologie-Farbe.
+   color-mix(in srgb, …) mischt 9 % Topologie-Farbe in transparenten Hintergrund –
+   das ergibt einen sehr zarten farbigen Schimmer ohne eigene Tinting-Variable. */
+.nw-topo-card.active {
+  border-color: var(--topo-color);
+  background: color-mix(in srgb, var(--topo-color) 9%, transparent);
+}
+/* Shimmer-Streifen bei aktiver Karte vollständig sichtbar */
+.nw-topo-card.active::before { opacity: 1; }
+
+/* Topologie-Name (fett, helle Schrift) und Kurzbezeichnung (kleiner, gedimmt) */
+.nw-topo-name { font-size: 0.85rem; font-weight: 700; color: var(--text-1); }
+.nw-topo-sub  { font-size: 0.72rem; color: var(--text-3); }
+/* Untere Zeile der Karte: Resilienz-Dots links, Badge rechts */
+.nw-topo-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 0.2rem; }
+
+/* Farbiges Label-Badge ("HOCH", "MITTEL" …) innerhalb der Topologie-Karte */
+.nw-topo-badge {
+  font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; padding: 0.15rem 0.45rem;
+  border-radius: 4px; border: 1px solid;
+}
+
+/* ── Resilienz-Punkte ── */
+/* Fünf kleine Kreise zeigen die Widerstandsfähigkeit der Topologie an (1–5 Punkte).
+   Aktive Punkte leuchten in der jeweiligen Topologie-Farbe (via inline-Style in JSX). */
+.nw-dots { display: flex; gap: 3px; align-items: center; }
+.nw-dot-pip {
+  width: 6px; height: 6px; border-radius: 50%;
+  /* Standardfarbe: fast unsichtbar; aktive Punkte überschreiben dies per inline-Style */
+  background: rgba(255,255,255,0.1);
+  transition: background 0.2s;
+}
+
+/* ── Simulator-Abschnitt ── */
+/* Bereich mit dem interaktiven SVG-Canvas und dem Statistik-Panel.
+   Hintergrund kombiniert: subtiler Blau-Glow in der Mitte + feines Gitternetz-Muster
+   (zwei lineare Verläufe mit sehr geringer Opazität übereinander). */
+.nw-sim-section {
+  padding: 55px 22px 90px;
+  background-color: rgba(4, 7, 16, 0.98);
+  background-image:
+    radial-gradient(ellipse 55% 65% at 50% 45%, rgba(41,151,255,0.05) 0%, transparent 68%),
+    linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.009) 1px, transparent 1px);
+  background-size: 100% 100%, auto 28px, 28px auto;
+}
+/* Zweispaltiges Layout: linke Spalte = SVG-Canvas (fluid), rechte Spalte = Panel (300px) */
+.nw-sim-wrap {
+  max-width: 960px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 300px; gap: 3rem; align-items: start;
+}
+
+/* ── SVG-Canvas ── */
+/* Äußerer Rahmen des SVG-Zeichenbereichs; Rahmenfarbe wechselt beim Hover zur Topologie-Farbe.
+   color-mix() mischt 30 % --topo-color in transparent für einen dezenten farbigen Glow. */
+.nw-canvas-box {
+  background: rgba(8,11,22,0.8);
+  border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+  transition: border-color 0.3s;
+}
+.nw-canvas-box:hover { border-color: color-mix(in srgb, var(--topo-color) 30%, transparent); }
+/* SVG füllt den Container in der Breite aus, kein sichtbarer Leerraum darunter */
+.nw-svg { width: 100%; display: block; }
+/* Hinweiszeile unterhalb des SVG ("Knoten anklicken zum Deaktivieren") */
+.nw-canvas-hint {
+  text-align: center; font-size: 0.72rem; color: var(--text-3);
+  padding: 0.7rem 1rem 1rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ── SVG-Kanten (Edges) ── */
+/* Sanfter Farbübergang wenn eine Kante von aktiv auf unterbrochen wechselt */
+.nw-edge { transition: stroke 0.35s; }
+
+/* ── SVG-Knoten (Nodes) ── */
+/* Knoten sind klickbar; beim Hover wird der Kreis heller dargestellt */
+.nw-node { cursor: pointer; }
+.nw-node:hover circle { filter: brightness(1.4) !important; }
+
+/* Beschriftung im SVG-Knoten (z.B. "P1", "Server") – keine Pointer-Events damit
+   Klicks auf den darunterliegenden <g>-Container weitergegeben werden */
+.nw-label {
+  font-size: 8.5px; font-weight: 700; pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  transition: fill 0.3s;
+}
+/* Rotes Kreuz-Symbol (zwei sich kreuzende Linien) auf deaktivierten Knoten */
+.nw-x-line {
+  stroke: rgba(239,68,68,0.85); stroke-width: 2;
+  stroke-linecap: round; pointer-events: none;
+}
+
+/* ── Statistik-Panel ── */
+/* Rechte Spalte: vertikaler Flex-Container mit den Live-Metriken */
+.nw-panel { display: flex; flex-direction: column; gap: 1.25rem; }
+
+/* Kopfzeile des Panels: Obertitel, Topologie-Name, Resilienz-Zeile */
+.nw-panel-header { display: flex; flex-direction: column; gap: 0.4rem; }
+/* Kleines farbiges Label ("LIVE-STATUS") über dem Topologie-Namen */
+.nw-panel-eyebrow {
+  font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  transition: color 0.3s;
+}
+.nw-panel-title {
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--text-1); letter-spacing: -0.02em;
+}
+/* Zeile mit Resilienz-Punkten und Badge im Panel-Kopf */
+.nw-panel-resilience { display: flex; align-items: center; gap: 0.6rem; }
+/* Badge im Panel (analog zum Karten-Badge, etwas größer) */
+.nw-panel-badge {
+  font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; padding: 0.18rem 0.5rem;
+  border-radius: 4px; border: 1px solid;
+  transition: all 0.3s;
+}
+
+/* Zweispaltiges Raster für die Kennzahlen-Boxen (aktive Knoten / verbundene Knoten) */
+.nw-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+/* Einzelne Kennzahlen-Box mit dunklem Hintergrund und feinem Rahmen */
+.nw-stat-box {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 1rem;
+  display: flex; flex-direction: column; gap: 0.3rem;
+}
+/* Große Zahl in der Kennzahlen-Box.
+   --n-color wird aus JSX gesetzt; color-mix() hellt die Farbe nach Weiß auf
+   um einen zweistufigen Verlauf zu erzeugen, der auf dunklem Hintergrund leuchtet. */
+.nw-stat-num {
+  font-size: 2.2rem; font-weight: 800; letter-spacing: -0.04em;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--n-color, #2997ff), color-mix(in srgb, var(--n-color, #2997ff) 60%, white));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  transition: all 0.3s;
+}
+/* Beschriftung unterhalb der Zahl (z.B. "Aktive Knoten") */
+.nw-stat-desc { font-size: 0.72rem; color: var(--text-3); font-weight: 500; }
+
+/* ── Verbindungs-Fortschrittsbalken ── */
+/* Container für Track + Label */
+.nw-bar-wrap { display: flex; flex-direction: column; gap: 0.4rem; }
+/* Grauer Hintergrundbalken */
+.nw-bar-track {
+  height: 4px; background: rgba(255,255,255,0.07);
+  border-radius: 2px; overflow: hidden;
+}
+/* Farbiger Füllbalken – Breite wird per inline-Style aus JSX gesetzt (0–100 %).
+   cubic-bezier(0.16,1,0.3,1) = "spring"-Kurve für weichen Einlauf */
+.nw-bar-fill {
+  height: 100%; border-radius: 2px;
+  transition: width 0.45s cubic-bezier(0.16,1,0.3,1), background 0.3s;
+}
+/* Prozentzahl und Label unterhalb des Balkens */
+.nw-bar-label { font-size: 0.72rem; color: var(--text-3); }
+
+/* ── Info-Box (Topologie-Beschreibung) ── */
+/* Rahmen und Hintergrundfarbe werden per inline-Style aus der Topologie-Farbe abgeleitet */
+.nw-info-box {
+  border: 1px solid; border-radius: 12px;
+  padding: 1rem 1.15rem; transition: all 0.3s;
+}
+.nw-info-text { font-size: 0.8rem; color: var(--text-2); line-height: 1.75; }
+
+/* ── Schwachstellen-Zeile ── */
+/* Roter "SCHWACHSTELLE"-Label + erläuternder Text, durch obere Trennlinie abgegrenzt */
+.nw-weakness-row {
+  display: flex; flex-direction: column; gap: 0.25rem;
+  padding: 0.85rem 0; border-top: 1px solid var(--border);
+}
+.nw-weakness-label {
+  font-size: 0.65rem; font-weight: 700; color: rgba(239,68,68,0.7);
+  text-transform: uppercase; letter-spacing: 0.09em;
+}
+.nw-weakness-text { font-size: 0.8rem; color: var(--text-2); line-height: 1.5; }
+
+/* ── Verbindungs-Verdict ── */
+/* Erscheint nur wenn Knoten deaktiviert wurden (dead.size > 0).
+   Grüne Variante (.ok) = Netz noch vollständig verbunden,
+   rote Variante (.fail) = Netz ist partitioniert. */
+.nw-verdict {
+  padding: 0.7rem 1rem; border-radius: 8px;
+  font-size: 0.82rem; font-weight: 700; text-align: center;
+  /* Kurze nwUp-Animation damit das Banner beim Erscheinen einschwebt */
+  animation: nwUp 0.3s ease both;
+}
+.nw-verdict.ok   { background: rgba(34,197,94,0.09);  border: 1px solid rgba(34,197,94,0.28);  color: #4ade80; }
+.nw-verdict.fail { background: rgba(239,68,68,0.09);  border: 1px solid rgba(239,68,68,0.28);  color: rgba(239,68,68,0.9); }
+
+/* ── Reset-Button ── */
+/* Kleiner Pill-Button zum Zurücksetzen aller deaktivierten Knoten */
+.nw-reset-btn {
+  padding: 0.5rem 1.1rem; border-radius: 980px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text-2); font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: border-color 0.15s, color 0.15s;
+  font-family: inherit; align-self: flex-start;
+}
+.nw-reset-btn:hover { border-color: rgba(255,255,255,0.28); color: var(--text-1); }
+
+/* ── Legende ── */
+/* Erklärt die drei Zustände im SVG: aktiver Knoten, toter Knoten, unterbrochene Kante */
+.nw-legend { display: flex; flex-direction: column; gap: 0.5rem; padding-top: 0.1rem; }
+.nw-legend-row {
+  display: flex; align-items: center; gap: 0.55rem;
+  font-size: 0.75rem; color: var(--text-3);
+}
+/* Farbiger Kreis-Punkt links neben dem Legende-Text */
+.nw-pip { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+/* Gestrichelte Linie als Symbol für eine unterbrochene Kante */
+.nw-dash-pip {
+  width: 14px; height: 0; border-top: 2px dashed rgba(239,68,68,0.45);
+  flex-shrink: 0;
+}
+
+/* ── Responsive Breakpoints ── */
+
+/* Ab ≤ 760 px (Tablets / große Smartphones):
+   Zweispaltiges Grid wird eingespaltig; Panel wandert per order: -1 über den Canvas,
+   damit die Metriken beim Scrollen zuerst sichtbar sind.
+   Desktop-Zeilenumbruch im Hero-Titel wird ausgeblendet (Fließtext). */
+@media (max-width: 760px) {
+  .nw-sim-wrap { grid-template-columns: 1fr; }
+  .nw-panel { order: -1; }
+  .br-desk { display: none; }
+}
+
+/* Ab ≤ 500 px (kleine Smartphones):
+   Topologie-Karten in der Auswahlleiste werden schmaler damit mehrere nebeneinander
+   in den sichtbaren Bereich passen (horizontales Scrollen bleibt erhalten). */
+@media (max-width: 500px) {
+  .nw-topo-card { min-width: 110px; padding: 0.75rem 0.85rem; }
+}

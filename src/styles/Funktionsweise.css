@@ -1,0 +1,261 @@
+/* ── Seiten-Hintergrund ── */
+/* Setzt den Hintergrund der gesamten Seite auf Schwarz (CSS-Variable) */
+.fw-page { background: var(--black); }
+
+/* ── Gemeinsame Layout-Helfer ── */
+/* Zentrierter Inhaltsbereich mit maximaler Breite und seitlichem Innenabstand */
+.fw-wrap       { max-width: 980px; margin: 0 auto; padding: 0 22px; }
+/* Einheitlicher vertikaler Abstand für alle Sektionen */
+.fw-section    { padding: 90px 0; }
+
+/* Topology & DHT Sektionen — horizontale Scanlines (sehr dezent) + blauer Glüh-Schimmer oben */
+/* background-image kombiniert zwei Ebenen:
+   1. linear-gradient: erzeugt feine horizontale Linien im 22px-Raster (Scanline-Effekt)
+   2. radial-gradient: weicher Cyan-Schimmer am oberen Rand (elliptische Form, oben zentriert) */
+.fw-section-dark {
+  background-color: rgba(14, 16, 22, 0.9);
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(0, 200, 255, 0.07) 0%, transparent 65%);
+  /* Scanlines wiederholen sich alle 22px vertikal; Glüh-Gradient füllt die gesamte Box */
+  background-size: auto 22px, 100% 100%;
+}
+
+/* Steps & NAT Sektionen — zentraler Radialschimmer + sehr feine vertikale Linien */
+/* background-image kombiniert drei Ebenen:
+   1. linear-gradient(90deg): senkrechte Linien alle 32px (vertikales Rhythmus-Raster)
+   2. radial-gradient Mitte: blauer Leuchtfleck in der Mitte der Box
+   3. radial-gradient Ecke: violetter Akzentschimmer unten rechts */
+.fw-section-black {
+  background-color: rgba(4, 7, 18, 0.92);
+  background-image:
+    linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px),
+    radial-gradient(ellipse 60% 70% at 50% 50%, rgba(41, 151, 255, 0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 90% 100%, rgba(110, 60, 255, 0.05) 0%, transparent 60%);
+  background-size: 32px auto, 100% 100%, 100% 100%;
+}
+
+/* ── Typografie-Hilfsklassen ── */
+/* Kleine Oberschrift (z. B. "WIE ES FUNKTIONIERT") über dem Haupttitel */
+.fw-eyebrow {
+  font-size: 0.72rem; font-weight: 600; color: var(--accent);
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.6rem;
+  display: block;
+}
+/* Haupt-Sektionsüberschrift — clamp() skaliert die Schriftgröße flüssig zwischen 1.8rem und 2.8rem */
+.fw-section-title {
+  font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 700;
+  letter-spacing: -0.03em; line-height: 1.05; color: var(--text-1);
+  margin-bottom: 1rem;
+}
+/* Einleitungstext unter dem Sektions-Titel, begrenzte Breite für bessere Lesbarkeit */
+.fw-section-sub {
+  font-size: 1rem; color: var(--text-2); line-height: 1.75;
+  max-width: 520px; margin-bottom: 3rem;
+}
+/* Allgemeiner Fließtext innerhalb von Sektionen */
+.fw-body {
+  font-size: 0.97rem; color: var(--text-2); line-height: 1.8;
+  margin-bottom: 1rem;
+}
+/* Hervorgehobener Text im Fließtext erhält Primärfarbe */
+.fw-body strong { color: var(--text-1); }
+/* <em> wird nicht kursiv dargestellt, aber ebenfalls in Primärfarbe hervorgehoben */
+.fw-body em     { color: var(--text-1); font-style: normal; }
+/* Hilfsklasse: zentriert den Text */
+.center-text    { text-align: center; }
+/* Manueller Zeilenumbruch – auf Desktop sichtbar, auf Mobilgeräten ausgeblendet (siehe @media) */
+.br-desk        { display: inline; }
+
+/* ── Hero-Bereich ── */
+/* Großer Einstiegsbereich: nimmt mindestens 80% der Viewport-Höhe ein,
+   Inhalt wird vertikal und horizontal zentriert */
+.fw-hero {
+  position: relative; min-height: 80vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 100px 22px 80px; overflow: hidden;
+}
+/* Hintergrund-Container: liegt hinter dem Inhalt, klickbar durchlässig (pointer-events: none) */
+.fw-hero-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+
+/* Animiertes Gitternetz-Overlay im Hero-Bereich */
+/* mask-image beschneidet das Gitter mit einem Radial-Verlauf, sodass es in den Rändern ausläuft */
+.fw-hero-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 100%);
+  animation: gridShift 20s linear infinite;
+}
+/* @keyframes gridShift: Verschiebt das Gitternetz diagonal um eine volle Kachel (60px × 60px),
+   wodurch eine kontinuierliche Scrollbewegung entsteht */
+@keyframes gridShift {
+  from { background-position: 0 0,0 0; }
+  to   { background-position: 60px 60px,60px 60px; }
+}
+
+/* Gemeinsame Basis für alle Leucht-Orbs: rund, stark unscharf (filter: blur erzeugt den Glüh-Effekt) */
+.fw-orb { position: absolute; border-radius: 50%; filter: blur(90px); }
+/* Blauer Orb oben links */
+.fw-orb-1 {
+  width: 500px; height: 500px; top: -10%; left: -5%;
+  background: radial-gradient(circle,rgba(41,151,255,0.15) 0%,transparent 70%);
+  animation: orbF 16s ease-in-out infinite;
+}
+/* Violetter Orb unten rechts */
+.fw-orb-2 {
+  width: 400px; height: 400px; bottom: 0; right: 0%;
+  background: radial-gradient(circle,rgba(110,60,255,0.1) 0%,transparent 70%);
+  animation: orbF2 20s ease-in-out infinite;
+}
+/* @keyframes orbF/orbF2: Leichte schwebende Bewegung (translate) für einen organischen Puls-Effekt */
+@keyframes orbF  { 0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-20px)} }
+@keyframes orbF2 { 0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,20px)} }
+
+/* Hero-Inhalt liegt über dem Hintergrund (z-index: 1 > 0 der Orbs) */
+.fw-hero-content { position: relative; z-index: 1; }
+
+/* Haupttitel im Hero-Bereich mit Gradient-Text-Technik:
+   background-clip: text + text-fill-color: transparent macht den Farbverlauf als Textfarbe sichtbar.
+   clamp() skaliert die Schrift von 3rem (mobil) bis 7rem (Desktop) */
+.fw-hero-title {
+  font-size: clamp(3rem,10vw,7rem); font-weight: 700;
+  letter-spacing: -0.04em; line-height: 0.95;
+  background: linear-gradient(135deg,#f5f5f7 30%,#2997ff 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; margin-bottom: 1.25rem;
+  /* Einblendanimation: der Titel fährt nach 0.4s Verzögerung von unten herein */
+  animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.4s both;
+}
+/* Untertitel im Hero — etwas später animiert (0.65s Verzögerung) als der Titel */
+.fw-hero-sub {
+  font-size: clamp(0.95rem,2vw,1.1rem); color: var(--text-2);
+  line-height: 1.75; max-width: 540px; margin: 0 auto;
+  animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.65s both;
+}
+/* @keyframes fadeUp: Elemente werden von unten (translateY 16px) nach oben eingeblendet (opacity 0→1) */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── Topologie-Bereich ── */
+/* Dreispaltiges Raster für Netzwerk-Topologie-Karten;
+   gap: 1px + background: border erzeugt dünne Trennlinien zwischen den Kacheln */
+.topo-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
+  background: var(--border); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; margin-top: 2rem;
+}
+/* Einzelne Topologie-Karte: Flex-Spalte, zentriert ausgerichtet */
+.topo-card {
+  background: rgba(0,0,0,0.6); padding: 2rem 1.75rem;
+  display: flex; flex-direction: column; align-items: center; gap: 1rem;
+  text-align: center; transition: background 0.2s;
+}
+/* Dezenter blauer Hover-Effekt für Karten */
+.topo-card:hover { background: rgba(41,151,255,0.04); }
+/* Hervorgehobene Karte (z. B. die empfohlene Topologie) mit stärkerem blauen Hintergrund */
+.topo-card-featured { background: rgba(41,151,255,0.05); }
+/* Feste Größe für die SVG-Illustrationen in den Topologie-Karten */
+.topo-svg { width: 120px; height: 120px; }
+/* Kartenbezeichnung */
+.topo-label {
+  font-size: 0.95rem; font-weight: 700; color: var(--text-1); letter-spacing: -0.01em;
+}
+/* Kurzbeschreibung unter dem Topologie-Titel */
+.topo-desc { font-size: 0.82rem; color: var(--text-2); line-height: 1.65; }
+
+/* ── Schritte-Bereich (Steps) ── */
+/* Vertikale Liste der Prozessschritte ohne Zwischenabstand (gap: 0),
+   Trennlinien kommen über border-bottom auf .fw-step */
+.fw-steps { margin-top: 3rem; display: flex; flex-direction: column; gap: 0; }
+/* Einzelner Schritt: zweispaltig — links die Schritt-Nummer (80px), rechts der Text */
+.fw-step {
+  display: grid; grid-template-columns: 80px 1fr; gap: 2rem;
+  padding: 2rem 0; border-bottom: 1px solid var(--border);
+  position: relative; transition: background 0.15s;
+}
+/* Obere Trennlinie nur beim ersten Schritt */
+.fw-step:first-child { border-top: 1px solid var(--border); }
+/* Subtiler blauer Hover-Hintergrund für interaktives Gefühl */
+.fw-step:hover { background: rgba(41,151,255,0.03); }
+/* Schritt-Nummer mit Gradient-Text-Technik (blau → hellblau) */
+.fw-step-num {
+  font-size: 2rem; font-weight: 800; letter-spacing: -0.04em;
+  background: linear-gradient(135deg,#2997ff,#80c8ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; line-height: 1; padding-top: 4px;
+}
+/* Überschrift des jeweiligen Schritts */
+.fw-step-title {
+  font-size: 1rem; font-weight: 700; color: var(--text-1);
+  letter-spacing: -0.01em; margin-bottom: 0.5rem;
+}
+/* Erklärungstext des Schritts */
+.fw-step-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.75; }
+
+/* ── Zweispaltige Layouts ── */
+/* Nebeneinander-Layout für Text + Diagramm (z. B. DHT-Sektion) */
+.fw-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+/* DHT-Diagramm-Container: begrenzt die Breite auf maximal 260px,
+   min() stellt sicher dass es sich auf kleinen Screens anpasst */
+.dht-diagram { width: min(260px,100%); margin: 0 auto; opacity: 0.9; }
+.dht-diagram svg { width: 100%; height: auto; }
+
+/* ── NAT-Karten (Network Address Translation) ── */
+/* Fünfspaltig: Karte – Pfeil – Karte – Pfeil – Karte
+   (auto für die Pfeile, 1fr für die Karten) */
+.nat-cards {
+  display: grid; grid-template-columns: 1fr auto 1fr auto 1fr;
+  gap: 1.5rem; align-items: center; margin-top: 3rem;
+}
+/* Standard NAT-Karte mit dunklem Hintergrund und Rahmen */
+.nat-card {
+  background: rgba(14,16,22,0.88); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.75rem 1.5rem;
+}
+/* Hervorgehobene NAT-Karte (z. B. der zentrale Schritt) — blauer Akzentrahmen */
+.nat-card-featured {
+  border-color: rgba(41,151,255,0.35);
+  background: rgba(41,151,255,0.05);
+}
+/* Kleine Nummerierungsbeschriftung oben in der NAT-Karte */
+.nat-card-num {
+  font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.75rem;
+}
+/* Titel innerhalb einer NAT-Karte */
+.nat-card h3 {
+  font-size: 0.97rem; font-weight: 700; color: var(--text-1);
+  margin-bottom: 0.6rem; letter-spacing: -0.01em;
+}
+/* Beschreibungstext in der NAT-Karte */
+.nat-card p { font-size: 0.85rem; color: var(--text-2); line-height: 1.7; }
+/* Pfeil zwischen den NAT-Karten; flex-shrink: 0 verhindert Zusammendrücken */
+.nat-arrow { font-size: 1.5rem; color: var(--text-3); flex-shrink: 0; }
+
+/* ── Responsive Breakpoints ── */
+/* Tablet und kleinere Desktops (≤ 860px):
+   - Topologie-Raster wird einspalt
+   - Zweispaltige Layouts stapeln sich vertikal
+   - NAT-Karten stapeln sich vertikal
+   - Pfeile zwischen NAT-Karten werden um 90° gedreht (zeigen nach unten) */
+@media (max-width: 860px) {
+  .topo-grid { grid-template-columns: 1fr; }
+  .fw-two-col { grid-template-columns: 1fr; gap: 3rem; }
+  .nat-cards { grid-template-columns: 1fr; }
+  .nat-arrow { text-align: center; transform: rotate(90deg); }
+}
+/* Smartphones (≤ 600px):
+   - Sektionen bekommen weniger vertikalen Abstand
+   - Schritte-Nummern-Spalte wird schmaler, Innenabstand verringert
+   - Schritt-Nummer wird kleiner
+   - Manuelle Zeilenumbrüche (.br-desk) werden ausgeblendet */
+@media (max-width: 600px) {
+  .fw-section { padding: 70px 0; }
+  .fw-step { grid-template-columns: 60px 1fr; gap: 1rem; }
+  .fw-step-num { font-size: 1.5rem; }
+  .br-desk { display: none; }
+}

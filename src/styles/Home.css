@@ -1,0 +1,863 @@
+/* ── Globales Reveal-System ── */
+/* Alle Elemente mit [data-reveal] starten unsichtbar und
+   leicht nach unten versetzt. Sobald die Klasse .revealed
+   per JavaScript hinzugefügt wird (z.B. via IntersectionObserver),
+   fahren sie sanft in ihre Endposition.
+   cubic-bezier(0.16, 1, 0.3, 1) erzeugt einen "overshoot"-freien,
+   weichen Easing-Effekt (ähnlich spring). */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Gestaffelte Verzögerungen: Elemente mit data-delay="1"–"5"
+   erscheinen nacheinander, um Gruppen-Animationen zu erzeugen */
+[data-reveal][data-delay="1"] { transition-delay: 0.1s; }
+[data-reveal][data-delay="2"] { transition-delay: 0.2s; }
+[data-reveal][data-delay="3"] { transition-delay: 0.3s; }
+[data-reveal][data-delay="4"] { transition-delay: 0.4s; }
+[data-reveal][data-delay="5"] { transition-delay: 0.5s; }
+
+/* Endzustand: vollständig sichtbar, an ursprünglicher Position */
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Layout ── */
+.home { background: var(--black); }
+
+/* Zwei zentrierte Container: Standard (980px) und schmal (692px) */
+.wrap        { max-width: 980px; margin: 0 auto; padding: 0 22px; }
+.wrap-narrow { max-width: 692px; margin: 0 auto; padding: 0 22px; }
+
+.section   { padding: 90px 0; }
+
+/* Halb-transparent, damit die fest positionierten Hintergrund-Orbs
+   von unten durchscheinen können */
+.bg-dark { background: rgba(14, 16, 22, 0.88); }
+
+/* Dunkle Sektionen: Kombination aus Punktraster (radial-gradient als
+   1px-Punkte alle 28px) und einem diagonalen Blau-zu-Lila-Farbverlauf
+   als subtile Tiefenwirkung */
+.bg-black {
+  background-color: rgba(4, 7, 18, 0.9);
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.045) 1px, transparent 1px),
+    linear-gradient(135deg,
+      rgba(41, 151, 255, 0.06) 0%,
+      transparent              45%,
+      rgba(110, 60, 255, 0.05) 100%
+    );
+  /* Erste Schicht: 28px-Raster für Punkte; zweite Schicht: volle Breite für den Farbverlauf */
+  background-size: 28px 28px, 100% 100%;
+}
+
+/* Jede Sektion erhält einen hauchdünnen leuchtenden linken Rand (1px)
+   als dekoratives Akzent-Element; pointer-events: none verhindert
+   Klick-Blockierung */
+.section::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(41,151,255,0.15), transparent);
+  pointer-events: none;
+}
+
+/* position: relative wird benötigt, damit ::before korrekt positioniert wird */
+.section { position: relative; }
+.center-text { text-align: center; }
+
+/* Kleines Label über Sektionsüberschriften (z.B. "FEATURES", "P2P") */
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.65rem;
+}
+
+/* Globale h2-Größe: clamp() skaliert flüssig zwischen
+   1.9rem (Minimum), 4.5vw (viewport-relativ) und 3rem (Maximum) */
+h2 {
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--text-1);
+}
+
+/* Untertiteltext unter Sektionsüberschriften */
+.section-sub {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: var(--text-2);
+  line-height: 1.7;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Navbar Scroll-Zustand ── */
+/* Wenn der Nutzer nach unten scrollt, wird .scrolled per JS hinzugefügt:
+   die Navbar erhält einen sichtbaren unteren Rand und
+   einen undurchsichtigen schwarzen Hintergrund */
+.navbar.scrolled {
+  border-bottom-color: rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.92);
+}
+
+/* Schiebt den Inhalt der Legal-Seite unterhalb der fixen Navbar */
+.legal-page { padding-top: 64px; }
+
+/* ── Hero ── */
+/* Vollbild-Einstiegsbereich: nimmt mindestens die volle Viewport-Höhe ein
+   (100svh = "small viewport height", berücksichtigt mobile Browser-UI).
+   overflow: hidden verhindert, dass Orbs und Partikel außerhalb sichtbar sind */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 100px 22px 60px;
+  overflow: hidden;
+}
+
+/* Hintergrundcontainer: inset: 0 entspricht top/right/bottom/left: 0;
+   pointer-events: none lässt Klicks auf den Inhalt durch */
+.hero-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+
+/* Animiertes Liniengitter im Hintergrund.
+   mask-image mit radialem Verlauf blendet das Gitter zu den Rändern hin
+   aus, sodass es in der Mitte am deutlichsten sichtbar ist */
+.hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridShift 20s linear infinite;
+  /* mask-image: blendet das Gitter kreisförmig aus – Mitte sichtbar,
+     Ränder transparent – für einen weichen Fokuseffekt */
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+}
+
+/* Bewegt das Gitter diagonal (rechts-unten) in einer Endlosschleife,
+   sodass es scheinbar nach unten-rechts "fließt" */
+@keyframes gridShift {
+  from { background-position: 0 0, 0 0; }
+  to   { background-position: 60px 60px, 60px 60px; }
+}
+
+/* ── Leuchtende Orbs ── */
+/* Große farbige Kreise mit starkem Blur erzeugen das Ambiente-Leuchten.
+   mix-blend-mode: screen addiert die Farben mit dem Hintergrund,
+   wodurch die Orbs leuchtender wirken statt sich zu überdecken */
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: orbFloat 12s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+/* Blauer Orb oben-links */
+.hero-orb-1 {
+  width: 600px; height: 600px;
+  top: -10%; left: -10%;
+  background: radial-gradient(circle, rgba(41,151,255,0.22) 0%, transparent 70%);
+  animation-duration: 14s;
+}
+
+/* Violetter Orb rechts-mitte; animation-delay: -5s startet die Animation
+   sofort in der Mitte, damit alle Orbs nie synchron sind */
+.hero-orb-2 {
+  width: 500px; height: 500px;
+  top: 30%; right: -8%;
+  background: radial-gradient(circle, rgba(120,80,255,0.18) 0%, transparent 70%);
+  animation-duration: 18s;
+  animation-delay: -5s;
+  /* Nutzt orbFloat2 für eine entgegengesetzte Bewegungsrichtung */
+  animation-name: orbFloat2;
+}
+
+/* Cyan-Orb unten-mitte */
+.hero-orb-3 {
+  width: 400px; height: 400px;
+  bottom: 0; left: 25%;
+  background: radial-gradient(circle, rgba(0,200,255,0.14) 0%, transparent 70%);
+  animation-duration: 16s;
+  animation-delay: -9s;
+}
+
+/* Hellblauer Orb oben-rechts */
+.hero-orb-4 {
+  width: 350px; height: 350px;
+  top: 10%; right: 20%;
+  background: radial-gradient(circle, rgba(80,180,255,0.12) 0%, transparent 70%);
+  animation-duration: 20s;
+  animation-delay: -3s;
+  animation-name: orbFloat2;
+}
+
+/* Orbs schweben in einem unregelmäßigen Pfad: leicht nach rechts-oben,
+   dann links-unten, mit minimalem Scale-Pulsieren */
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(40px, -30px) scale(1.06); }
+  66%       { transform: translate(-20px, 40px) scale(0.95); }
+}
+
+/* Spiegelverkehrte Variante von orbFloat für die geraden Orbs */
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(-50px, 30px) scale(1.08); }
+  66%       { transform: translate(30px, -40px) scale(0.94); }
+}
+
+/* ── Schwebende Partikel ── */
+/* Unsichtbarer Container als Koordinatensystem für die Partikel */
+.hero-particles { position: absolute; inset: 0; }
+
+/* Basisstil aller Partikel: kleine weiße Punkte (2×2px),
+   gleichmäßig über den Hero verteilt */
+.hero-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  animation: particleDrift 8s ease-in-out infinite;
+}
+
+/* 22 individuelle Partikel mit variierenden Positionen, Größen,
+   Animationsdauern und negativen Delays, damit sie
+   zeitlich versetzt und zufällig verteilt wirken */
+.hero-particle-0  { top:  8%; left: 12%; width: 3px; height: 3px; animation-duration: 9s;  animation-delay: 0s;    background: rgba(41,151,255,0.7); }
+.hero-particle-1  { top: 14%; left: 72%; animation-duration: 11s; animation-delay: -2s; }
+.hero-particle-2  { top: 22%; left: 38%; width: 3px; height: 3px; animation-duration: 13s; animation-delay: -5s;  background: rgba(120,80,255,0.6); }
+.hero-particle-3  { top: 30%; left: 88%; animation-duration: 10s; animation-delay: -1s; }
+.hero-particle-4  { top: 38%; left: 5%;  width: 3px; height: 3px; animation-duration: 14s; animation-delay: -7s;  background: rgba(0,200,255,0.6); }
+.hero-particle-5  { top: 45%; left: 55%; animation-duration: 8s;  animation-delay: -3s; }
+.hero-particle-6  { top: 52%; left: 22%; width: 3px; height: 3px; animation-duration: 12s; animation-delay: -6s;  background: rgba(41,151,255,0.5); }
+.hero-particle-7  { top: 60%; left: 78%; animation-duration: 9s;  animation-delay: -4s; }
+.hero-particle-8  { top: 68%; left: 42%; width: 3px; height: 3px; animation-duration: 15s; animation-delay: -8s;  background: rgba(80,180,255,0.6); }
+.hero-particle-9  { top: 75%; left: 15%; animation-duration: 11s; animation-delay: -2s; }
+.hero-particle-10 { top: 82%; left: 62%; width: 3px; height: 3px; animation-duration: 10s; animation-delay: -5s;  background: rgba(120,80,255,0.5); }
+.hero-particle-11 { top: 90%; left: 30%; animation-duration: 13s; animation-delay: -1s; }
+.hero-particle-12 { top:  5%; left: 50%; animation-duration: 16s; animation-delay: -9s; background: rgba(41,151,255,0.4); }
+.hero-particle-13 { top: 18%; left: 95%; animation-duration: 9s;  animation-delay: -3s; }
+.hero-particle-14 { top: 35%; left: 65%; width: 3px; height: 3px; animation-duration: 12s; animation-delay: -6s;  background: rgba(0,200,255,0.5); }
+.hero-particle-15 { top: 48%; left: 35%; animation-duration: 14s; animation-delay: -4s; }
+.hero-particle-16 { top: 58%; left: 92%; animation-duration: 10s; animation-delay: -7s; background: rgba(120,80,255,0.4); }
+.hero-particle-17 { top: 72%; left: 8%;  width: 3px; height: 3px; animation-duration: 11s; animation-delay: -2s;  background: rgba(41,151,255,0.6); }
+.hero-particle-18 { top: 85%; left: 48%; animation-duration: 8s;  animation-delay: -5s; }
+.hero-particle-19 { top: 25%; left: 18%; width: 3px; height: 3px; animation-duration: 13s; animation-delay: -1s;  background: rgba(80,180,255,0.5); }
+.hero-particle-20 { top: 65%; left: 58%; animation-duration: 15s; animation-delay: -8s; }
+.hero-particle-21 { top: 92%; left: 80%; width: 3px; height: 3px; animation-duration: 9s;  animation-delay: -3s;  background: rgba(0,200,255,0.4); }
+
+/* Partikel driften unregelmäßig in verschiedene Richtungen
+   und variieren dabei ihre Deckkraft, um ein organisches Flackern zu erzeugen */
+@keyframes particleDrift {
+  0%, 100% { transform: translate(0, 0);   opacity: 0.4; }
+  25%       { transform: translate(8px, -12px); opacity: 0.9; }
+  50%       { transform: translate(-6px, 8px);  opacity: 0.5; }
+  75%       { transform: translate(10px, 4px);  opacity: 0.8; }
+}
+
+/* ── Hero-Inhalt ── */
+/* z-index: 1 stellt sicher, dass der Textinhalt über allen
+   Hintergrundebenen (Orbs, Gitter, Partikel) liegt */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Kleines Oberlabel (z.B. "ABSCHLUSSARBEIT 2024").
+   animation: fadeUp mit 0.2s Delay – erscheint als Erstes */
+.hero-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 1.75rem;
+  animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+}
+
+/* Haupttitel: clamp() skaliert von 3.5rem (Mobilgerät) bis 8rem (Desktop).
+   line-height: 0.95 rückt mehrzeilige Titel enger zusammen */
+.hero-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: clamp(3.5rem, 11vw, 8rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  margin-bottom: 1.5rem;
+}
+
+/* Jede Titelzeile wird als Block gerendert.
+   overflow: hidden ist Voraussetzung für den clip-path-Reveal */
+.hero-word {
+  display: block;
+  overflow: hidden;
+}
+
+/* data-text-Attribut dient als Fallback / barrierefreier Textinhalt */
+.hero-word::after {
+  content: attr(data-text);
+}
+
+/* clip-path: inset(0 0 100% 0) versteckt den Text vollständig von unten.
+   Die Animation enthüllt ihn, indem der Clip auf inset(0 0 0% 0) fährt –
+   kombiniert mit einem kleinen translateY für einen fließenden Eindruck.
+   Erste Zeile erscheint nach 0.4s */
+.hero-title .hero-word:nth-child(1) {
+  color: var(--text-1);
+  animation: lineReveal 0.9s cubic-bezier(0.16,1,0.3,1) 0.4s both;
+}
+
+/* Zweite Titelzeile erscheint 0.2s später als die erste */
+.hero-title .hero-word:nth-child(2) {
+  animation: lineReveal 0.9s cubic-bezier(0.16,1,0.3,1) 0.6s both;
+}
+
+/* clip-path von vollständig verdeckt (100% Bodenrand) zu vollständig
+   sichtbar (0% Bodenrand); gleichzeitig leichter Aufwärtsdrift */
+@keyframes lineReveal {
+  from { clip-path: inset(0 0 100% 0); transform: translateY(20px); }
+  to   { clip-path: inset(0 0 0% 0);   transform: translateY(0); }
+}
+
+/* Gradient-Text-Technik: Der Farbverlauf wird auf den Text geclippt.
+   -webkit-text-fill-color: transparent macht den Text selbst unsichtbar,
+   sodass der Hintergrundverlauf durchscheint */
+.hero-accent-word {
+  background: linear-gradient(135deg, #2997ff 20%, #80c8ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Untertitel unter dem Haupttitel; erscheint nach 0.85s */
+.hero-sub {
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  color: var(--text-2);
+  line-height: 1.75;
+  max-width: 520px;
+  margin-bottom: 2.5rem;
+  animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.85s both;
+}
+
+/* Button-Gruppe (CTA); flex-wrap erlaubt Umbruch auf kleinen Screens */
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 1.05s both;
+}
+
+/* Universelle Einblend-Animation von unten nach oben */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Primärer Call-to-Action-Button (ausgefüllt, blau).
+   border-radius: 980px erzeugt eine Pill-Form */
+.btn-blue {
+  display: inline-block;
+  padding: 0.65rem 1.4rem;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-radius: 980px;
+  transition: opacity 0.15s, transform 0.15s;
+}
+/* Hover: leichtes Abdunkeln und minimales Verkleinern für taktiles Feedback */
+.btn-blue:hover { opacity: 0.82; transform: scale(0.98); }
+
+/* Sekundärer Text-Button (kein Hintergrund) */
+.btn-text {
+  font-size: 0.88rem;
+  color: var(--accent);
+  transition: opacity 0.15s;
+}
+.btn-text:hover { opacity: 0.7; }
+
+/* Scroll-Hinweis am unteren Rand des Hero */
+/* Absolut zentriert unterhalb des Inhalts;
+   erscheint als letztes Element nach 1.5s */
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 1.5s both;
+}
+
+/* Vertikale Linie als visueller Scroll-Hinweis.
+   transform-origin: top lässt die Linie von oben nach unten "wachsen" */
+.scroll-dot {
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(to bottom, var(--text-3), transparent);
+  margin: 0 auto;
+  animation: scrollLine 1.8s ease-in-out infinite;
+  transform-origin: top;
+}
+
+/* Die Linie wächst von 0 auf volle Höhe (scaleY 0→1),
+   wird dann ausgeblendet – simuliert eine fließende Scrollbewegung */
+@keyframes scrollLine {
+  0%   { transform: scaleY(0); opacity: 1; }
+  60%  { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
+/* ── Statement-Sektion ── */
+/* Kurze, prägnante Aussage-Sektion mit großem, zentriertem Text */
+.statement-section {
+  padding: 60px 22px;
+  background: rgba(14, 16, 22, 0.88);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Großer, markanter Aussagetext; clamp() ermöglicht
+   fluide Schriftgröße ohne Breakpoints */
+.statement-text {
+  font-size: clamp(1.8rem, 5vw, 3.8rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--text-2);
+  text-align: center;
+}
+
+/* Hervorgehobene Wörter im Statement erhalten einen
+   Gradient-Text-Effekt (weiß zu blau) */
+.statement-text span {
+  background: linear-gradient(135deg, #f5f5f7 0%, #2997ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Definition-Sektion ── */
+/* Fließtextabsätze mit etwas mehr Zeilenabstand für Lesbarkeit */
+.body-large {
+  font-size: 1.05rem;
+  color: var(--text-2);
+  line-height: 1.8;
+  max-width: 560px;
+  margin: 0 auto 1.25rem;
+}
+/* Hervorgehobene Begriffe im Fließtext */
+.body-large strong { color: var(--text-1); font-weight: 600; }
+/* em wird hier semantisch als Hervorhebung, nicht kursiv verwendet */
+.body-large em     { color: var(--text-1); font-style: normal; }
+
+/* ── Diagramm ── */
+/* Container für das SVG-Netzwerkdiagramm; zentriert mit Abstand nach oben */
+.diagram-wrap {
+  margin-top: 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* SVG skaliert responsiv; min() wählt den kleineren Wert aus
+   480px und 88% der Viewport-Breite */
+.diagram-svg {
+  width: min(480px, 88vw);
+  height: auto;
+}
+
+/* SVG-Linien sind initial komplett mit Dash verdeckt (stroke-dashoffset = 200).
+   Solange .draw nicht gesetzt ist, wird keine Animation ausgeführt */
+.diagram-svg .svg-line {
+  animation: none;
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+}
+
+/* Wenn .draw gesetzt wird (per JS beim Einblenden), zeichnen sich
+   die Linien von dashoffset 200 → 0 auf, d.h. die Linie "zeichnet sich" */
+.diagram-svg.draw .svg-line {
+  animation: drawLine 0.6s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+/* stroke-dashoffset: 0 bedeutet, die Linie ist vollständig gezeichnet */
+@keyframes drawLine {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Peer-Knoten im SVG starten unsichtbar */
+.diagram-svg .svg-peer {
+  opacity: 0;
+}
+
+/* Nach dem Auslösen werden Peer-Knoten eingeblendet und skaliert */
+.diagram-svg.draw .svg-peer {
+  animation: fadeInScale 0.4s ease forwards;
+}
+
+/* Knoten erscheinen mit einer leichten Vergrößerungs-Animation */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.6); transform-origin: center; }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Pulsierender Ring um den Mittelpunkt des Diagramms:
+   der Radius wächst und die Deckkraft schwindet – wie ein Radar-Ping.
+   r ist ein SVG-Attribut und kann per CSS animiert werden */
+.svg-pulse-ring {
+  animation: pulsering 2.5s ease-in-out infinite;
+}
+
+@keyframes pulsering {
+  0%, 100% { r: 42; opacity: 0.2; }
+  50%       { r: 50; opacity: 0; }
+}
+
+/* Zentraler Knoten blendet mit leichter Verzögerung ein */
+.svg-center {
+  animation: fadeInScale 0.5s ease 0.3s both;
+}
+
+/* Bildunterschrift unterhalb des Diagramms */
+.diagram-caption {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+}
+
+/* ── Statistiken ── */
+/* Horizontale Reihe mit gleichmäßig verteilten Kennzahlen */
+.stats-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Jede Kennzahl nimmt gleich viel Platz ein (flex: 1) */
+.stat {
+  flex: 1;
+  text-align: center;
+  padding: 0 2.5rem;
+}
+
+/* Die große Zahl erhält einen Gradient-Text-Effekt (weiß nach blau).
+   line-height: 1 verhindert zu viel Abstand über der Zahl */
+.stat-num {
+  display: block;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  background: linear-gradient(135deg, #f5f5f7 30%, #2997ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+
+/* Beschriftung unter der Zahl */
+.stat-label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-2);
+  line-height: 1.55;
+  max-width: 180px;
+  margin: 0 auto;
+}
+
+/* Vertikale Trennlinie zwischen den Kennzahlen.
+   align-self: stretch lässt sie die volle Zeilenhöhe einnehmen */
+.stat-divider {
+  width: 1px;
+  background: var(--border);
+  align-self: stretch;
+  flex-shrink: 0;
+  min-height: 80px;
+}
+
+/* ── Features ── */
+.feat-header { margin-bottom: 3.5rem; }
+.feat-header h2 { line-height: 1.1; }
+
+/* 3-spaltiges Raster für Feature-Karten; obere Trennlinie als Rahmen */
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--border);
+}
+
+/* Jeder Feature-Eintrag hat eine untere Trennlinie und
+   rechtsseitigen Abstand (kein linker Rand bei der ersten Spalte) */
+.feat-item {
+  padding: 2.25rem 2.5rem 2.25rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+/* Zweite und dritte Spalte erhalten einen linken Rand als Trenner */
+.feat-item:nth-child(3n+2),
+.feat-item:nth-child(3n+3) {
+  padding-left: 2.5rem;
+  border-left: 1px solid var(--border);
+}
+
+/* Subtiles Blau-Highlight beim Hovern */
+.feat-item:hover {
+  background: rgba(41,151,255,0.03);
+}
+
+/* Nummerierung der Features (z.B. "01", "02") */
+.feat-num {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--accent);
+  opacity: 0.6;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+/* Feature-Titel */
+.feat-item h3 {
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+}
+
+/* Feature-Beschreibungstext */
+.feat-item p {
+  font-size: 0.875rem;
+  color: var(--text-2);
+  line-height: 1.7;
+}
+
+/* ── Vergleichstabelle ── */
+/* border-collapse: collapse entfernt die Doppelränder zwischen Zellen */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table thead tr {
+  border-bottom: 1px solid var(--border);
+}
+
+/* Tabellenkopfzeile: Kleinbuchstaben in Großbuchstaben-Optik */
+.table th {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+  background: var(--dark);
+}
+
+/* Spaltenüberschrift für P2P-Spalte farblich hervorgehoben */
+.th-p2p { color: var(--accent) !important; }
+
+.table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+/* Letzte Zeile ohne unteren Rand, um den Rahmen nicht zu verdoppeln */
+.table tr:last-child td { border-bottom: none; }
+/* Weicher Hintergrundübergang beim Hovern */
+.table tbody tr { transition: background 0.15s; }
+.table tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+/* Zellstile: Schlüsselbegriff fett, P2P-Spalte hell, Zentralbank-Spalte gedimmt */
+.td-key { font-weight: 600; color: var(--text-1); }
+.td-p2p { color: var(--text-1); }
+.td-cs  { color: var(--text-3); }
+
+/* ── Beispiele ── */
+/* Liste realer P2P-Beispiele; obere Trennlinie als Rahmenbeginn */
+.examples-list { border-top: 1px solid var(--border); }
+
+/* 4-spaltiges Grid: Nummer | Name | Kategorie | Jahr.
+   gap: 1rem für optischen Abstand zwischen den Spalten */
+.example-row {
+  display: grid;
+  grid-template-columns: 3rem 1fr 1fr 5rem;
+  align-items: center;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+  transition: background 0.15s, padding 0.15s;
+  cursor: default;
+}
+
+/* Hover: Blau-Hintergrund und leichte Einrückung nach rechts
+   für ein interaktives Gefühl */
+.example-row:hover {
+  background: rgba(41,151,255,0.04);
+  padding-left: 0.5rem;
+}
+
+/* Zellstile der Beispiel-Zeilen */
+.ex-num  { font-size: 0.68rem; color: var(--text-3); font-weight: 500; }
+.ex-name { font-size: 0.97rem; font-weight: 600; color: var(--text-1); }
+.ex-kat  { font-size: 0.85rem; color: var(--text-2); }
+.ex-jahr { font-size: 0.82rem; color: var(--text-3); text-align: right; }
+
+/* ── Typen-Raster ── */
+/* 3-spaltiges Raster für Blockchain-/P2P-Typen.
+   gap: 1px mit background: var(--border) erzeugt dünne Gitterlinien
+   zwischen den Kacheln, ohne echte Borders zu verwenden */
+.types-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* Einzelne Typ-Kachel mit flexibler vertikaler Ausrichtung */
+.type-block {
+  background: var(--dark);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  position: relative;
+  transition: background 0.2s;
+}
+
+/* Standard-Hover und hervorgehobene Kachel-Variante */
+.type-block:hover         { background: #1a1a1c; }
+.type-block-featured      { background: #070f1a; }
+.type-block-featured:hover{ background: #0c1823; }
+
+/* Kleines nummeriertes Label über dem Kacheltitel */
+.type-num {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  opacity: 0.55;
+}
+
+/* Kacheltitel */
+.type-block h3 {
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: -0.01em;
+}
+
+/* Kachelbeschreibung */
+.type-block p {
+  font-size: 0.875rem;
+  color: var(--text-2);
+  line-height: 1.7;
+}
+
+/* Kleingedrucktes Beispiel am Ende jeder Kachel */
+.type-example {
+  font-size: 0.78rem !important;
+  color: var(--text-3) !important;
+  margin-top: 0.25rem;
+}
+
+/* Kleines Markierungs-Badge (z.B. "EMPFOHLEN") mit Blau-Akzent und
+   transparentem Hintergrund */
+.type-badge {
+  display: inline-block;
+  width: fit-content;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--accent);
+  background: rgba(41,151,255,0.1);
+  border: 1px solid rgba(41,151,255,0.2);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.35rem;
+}
+
+/* ── Responsive Breakpoints ── */
+
+/* Tablet-Breakpoint (≤ 860px):
+   - Features-Raster wechselt von 3 auf 2 Spalten
+   - Typ-Kacheln stapeln sich einspaltig
+   - Statistik-Zeile wird vertikal gestapelt, Trennlinien ausgeblendet */
+@media (max-width: 860px) {
+  .feat-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Alten 3-Spalten-Rand-Logik zurücksetzen,
+     dann gerade Einträge (rechte Spalte) neu einrücken */
+  .feat-item:nth-child(3n+2),
+  .feat-item:nth-child(3n+3) { padding-left: 0; border-left: none; }
+  .feat-item:nth-child(even) { padding-left: 2rem; border-left: 1px solid var(--border); }
+
+  .types-grid { grid-template-columns: 1fr; }
+
+  /* Statistiken untereinander statt nebeneinander;
+     Trennlinien entfallen, da kein horizontales Layout mehr */
+  .stats-row { flex-direction: column; align-items: center; gap: 3rem; }
+  .stat-divider { display: none; }
+}
+
+/* Mobil-Breakpoint (≤ 600px):
+   - Sektionen bekommen weniger vertikalen Abstand
+   - Features und Typen werden einspaltig
+   - Beispiel-Raster vereinfacht (Jahreszahl ausgeblendet)
+   - Hero-Buttons stapeln sich vertikal
+   - .br-desk (Desktop-Zeilenumbrüche im HTML) werden versteckt */
+@media (max-width: 600px) {
+  .section { padding: 72px 0; }
+  .statement-section { padding: 80px 22px; }
+
+  /* Einspaltig: alle Feature-Einträge ohne linken Rand */
+  .feat-grid { grid-template-columns: 1fr; }
+  .feat-item:nth-child(even) { padding-left: 0; border-left: none; }
+
+  /* Beispiel-Zeilen: nur Nummer und Name bleiben sichtbar;
+     Kategorie wird in die zweite Spalte verschoben */
+  .example-row { grid-template-columns: 2.5rem 1fr; }
+  .ex-kat  { grid-column: 2; font-size: 0.78rem; }
+  /* Jahreszahl auf kleinen Screens ausgeblendet, um Platz zu sparen */
+  .ex-jahr { display: none; }
+
+  /* Desktop-Zeilenumbrüche (<br class="br-desk">) ausblenden */
+  .br-desk { display: none; }
+
+  /* Hero-Buttons untereinander statt nebeneinander */
+  .hero-actions { flex-direction: column; gap: 1rem; }
+}

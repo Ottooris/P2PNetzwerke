@@ -1,0 +1,338 @@
+/* ── Seiten-Wrapper ── */
+/* Setzt den globalen Hintergrund der Anwendungen-Seite auf die CSS-Variable --black */
+.anwendungen-page { background: var(--black); }
+
+/* ── Hero ── */
+/* Vollbild-Einstiegsbereich mit zentriertem Inhalt und dekorativem Hintergrund */
+.anwendungen-hero {
+  position: relative; min-height: 80vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 100px 22px 80px; overflow: hidden;
+}
+
+/* Hintergrund-Container: pointer-events: none verhindert, dass Dekorationselemente
+   Mausinteraktionen abfangen */
+.anwendungen-hero__bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+
+/* Subtiles Gitternetz aus halbtransparenten Linien (4 % Weiß).
+   mask-image mit radial-gradient sorgt dafür, dass das Gitter zur Mitte hin
+   sichtbar ist und zu den Rändern hin sanft ausblendet */
+.hero-grid-lines {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%,black 20%,transparent 100%);
+}
+
+/* Basisstil für alle Licht-Orbs: runde Form, stark weichgezeichnet (blur 90px)
+   für einen diffusen Leuchteffekt */
+.hero-orb { position: absolute; border-radius: 50%; filter: blur(90px); }
+
+/* Orb A: blauer Lichtfleck oben links, driftet mit Animation sanft umher */
+.hero-orb-a {
+  width: 550px; height: 550px; top: -15%; left: -10%;
+  background: radial-gradient(circle,rgba(41,151,255,0.14) 0%,transparent 70%);
+  animation: orbA 18s ease-in-out infinite;
+}
+
+/* Orb B: violetter Lichtfleck unten rechts, gegensinnig zu Orb A animiert */
+.hero-orb-b {
+  width: 450px; height: 450px; bottom: -10%; right: -5%;
+  background: radial-gradient(circle,rgba(110,60,255,0.1) 0%,transparent 70%);
+  animation: orbB 22s ease-in-out infinite;
+}
+
+/* @keyframes orbA: Bewegt Orb A in einem Bogen (0 → +40px/-30px → 0).
+   Erzeugt ein organisches, "atmendes" Schweben über 18 Sekunden */
+@keyframes orbA { 0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)} }
+
+/* @keyframes orbB: Bewegt Orb B gegensinnig zu orbA (0 → -40px/+30px → 0)
+   über 22 Sekunden, um eine lebendige Tiefenwirkung zu erzielen */
+@keyframes orbB { 0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)} }
+
+/* Inhalts-Wrapper liegt via z-index: 1 über dem dekorierten Hintergrund */
+.anwendungen-hero__content { position: relative; z-index: 1; }
+
+/* Kleines Eyebrow-Label oberhalb des Haupttitels; verwendet die globale Akzentfarbe
+   und erscheint mit fadeUp-Animation (0.2s Verzögerung) */
+.hero-eyebrow {
+  font-size: 0.72rem; font-weight: 600; color: var(--accent);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 1rem; display: block;
+  animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+}
+
+/* Haupttitel: fluid-responsive Schriftgröße per clamp() (3rem bis 7rem).
+   Farbverlauf-Text: linear-gradient wird per -webkit-background-clip: text
+   als Textfüllung gerendert – der Text ist dadurch transparent und zeigt
+   nur den Farbverlauf (Weiß → Blau). fadeUp erscheint nach 0.4s */
+.hero-title {
+  font-size: clamp(3rem,10vw,7rem); font-weight: 700;
+  letter-spacing: -0.04em; line-height: 0.95;
+  background: linear-gradient(135deg,#f5f5f7 30%,#2997ff 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 1.25rem;
+  animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.4s both;
+}
+
+/* Untertitel mit fluid-responsiver Größe; erscheint nach 0.6s als letztes Element */
+.hero-sub {
+  font-size: clamp(0.95rem,2vw,1.1rem); color: var(--text-2);
+  line-height: 1.75; max-width: 580px; margin: 0 auto;
+  animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.6s both;
+}
+
+/* @keyframes fadeUp: Allgemeine Einblend-Animation.
+   Elemente starten unsichtbar und 16px nach unten versetzt,
+   fahren dann auf ihre finale Position (opacity 1, kein Versatz).
+   cubic-bezier(0.16,1,0.3,1) erzeugt einen weichen "Federeinschwing"-Effekt */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Scroll-Indikator: zentriert am unteren Rand des Hero-Bereichs positioniert */
+.hero-scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 1; }
+
+/* Animierte Linie, die nach unten "abrollt" und wieder ausblendet –
+   signalisiert dem Nutzer, nach unten zu scrollen */
+.scroll-dot {
+  width: 1px; height: 48px; margin: 0 auto;
+  background: linear-gradient(to bottom,var(--text-3),transparent);
+  animation: scrollLine 1.8s ease-in-out infinite;
+  transform-origin: top;
+}
+
+/* @keyframes scrollLine: Die Linie wird von oben nach unten aufgezogen (scaleY 0 → 1)
+   und blendet anschließend aus (opacity 1 → 0), wiederholt sich alle 1.8 Sekunden */
+@keyframes scrollLine {
+  0%  { transform: scaleY(0); opacity:1; }
+  60% { transform: scaleY(1); opacity:1; }
+  100%{ transform: scaleY(1); opacity:0; }
+}
+
+/* Zeilenumbruch, der nur auf Desktop-Breiten sichtbar ist;
+   wird auf kleinen Bildschirmen per @media ausgeblendet */
+.br-desk { display: inline; }
+
+/* ── Timeline bar ── */
+/* Horizontale Zeitstrahl-Leiste zwischen Hero und Inhalts-Sektionen */
+.timeline-section {
+  background: rgba(14,16,22,0.9);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  padding: 0 22px;
+}
+
+/* Innerer Flex-Container; min-width: 600px verhindert, dass Items
+   auf sehr kleinen Bildschirmen zu stark gequetscht werden */
+.timeline-inner {
+  max-width: 980px; margin: 0 auto;
+  display: flex; align-items: center; gap: 0;
+  min-width: 600px;
+}
+
+/* Einzelner Timeline-Eintrag; flex: 1 verteilt alle Items gleichmäßig */
+.timeline-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; padding: 1.5rem 0.5rem;
+  position: relative; cursor: default;
+}
+
+/* Trennlinie zwischen Timeline-Items: wird per ::before-Pseudo-Element
+   als 1px breite, vertikal zentrierte Linie erzeugt */
+.timeline-item + .timeline-item::before {
+  content: ''; position: absolute; left: 0; top: 50%;
+  width: 1px; height: 28px; transform: translateY(-50%);
+  background: var(--border);
+}
+
+/* Jahreszahl im Timeline-Item; --app-color ist eine CSS Custom Property,
+   die pro Anwendungs-Sektion individuell gesetzt wird.
+   var(--app-color, var(--accent)) nutzt --accent als Fallback-Farbe,
+   falls --app-color nicht definiert ist */
+.timeline-year {
+  font-size: 1.1rem; font-weight: 800; letter-spacing: -0.03em;
+  color: var(--app-color, var(--accent)); line-height: 1;
+  margin-bottom: 0.35rem;
+}
+
+/* Kleiner runder Punkt unter der Jahreszahl, ebenfalls in --app-color gefärbt */
+.timeline-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--app-color, var(--accent));
+  margin-bottom: 0.35rem;
+}
+
+.timeline-name { font-size: 0.72rem; color: var(--text-3); font-weight: 500; text-align: center; }
+
+/* ── Application Sections ── */
+/* Haupt-Container für alle Anwendungs-Sektionen; kein zusätzliches Padding,
+   da jede .app-section ihr eigenes Padding definiert */
+.anwendungen-main { padding: 0; }
+
+/* Grundstil jeder Anwendungs-Sektion */
+.app-section {
+  padding: 90px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Gerade Sektionen (even): Visual Card liegt rechts.
+   Der Hintergrund-Bloom (Leuchtfleck) erstreckt sich daher von rechts (80% 50%).
+   color-mix(in srgb, var(--app-color) 9%, transparent) mischt die sektionsspezifische
+   Akzentfarbe zu 9 % in Transparenz – das ergibt einen sanften farbigen Schimmer,
+   der automatisch zur Farbe der jeweiligen Sektion passt.
+   Ein zweiter kleinerer Bloom oben links (5% 90%) schafft Raumtiefe.
+   Die horizontalen Rasterlinien (linear-gradient, 26px Abstand) verstärken
+   das technische Erscheinungsbild */
+.app-section--even {
+  background-color: rgba(4, 7, 18, 0.93);
+  background-image:
+    radial-gradient(ellipse 60% 80% at 80% 50%,
+      color-mix(in srgb, var(--app-color) 9%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 35% 45% at 5% 90%,
+      color-mix(in srgb, var(--app-color) 4%, transparent) 0%, transparent 60%),
+    linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, auto 26px;
+}
+
+/* Ungerade Sektionen (odd): Visual Card liegt links.
+   Der Bloom sitzt daher bei 20% 50% (linke Seite).
+   Zweiter Akzentbloom oben rechts (95% 10%).
+   Vertikale Rasterlinien (28px Abstand) als Variation zu den geraden Sektionen */
+.app-section--odd {
+  background-color: rgba(14, 16, 22, 0.92);
+  background-image:
+    radial-gradient(ellipse 60% 80% at 20% 50%,
+      color-mix(in srgb, var(--app-color) 9%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 35% 45% at 95% 10%,
+      color-mix(in srgb, var(--app-color) 4%, transparent) 0%, transparent 60%),
+    linear-gradient(90deg, rgba(255,255,255,0.013) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 28px auto;
+}
+
+/* Zweispaltiges Grid: Text (flexible Breite) + Visual Card (feste 380px) */
+.app-section__inner {
+  max-width: 980px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 380px;
+  gap: 5rem; align-items: center;
+}
+
+/* Bei odd-Sektionen steht die Visual Card links (order: 0) und der Text rechts (order: 1).
+   Standardmäßig (even) ist die Reihenfolge im DOM-Fluss */
+.app-section__text--right { order: 1; }
+.app-section__visual--left { order: 0; }
+
+/* Kopfzeile der Sektion: Jahr-Badge und Kategorie-Label nebeneinander */
+.app-section__header {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+/* Jahr-Badge: nutzt color-mix(), um Hintergrund (12 %) und Border (30 %)
+   automatisch aus der sektionsspezifischen --app-color abzuleiten.
+   So bleibt das Badge immer farbharmonisch ohne manuelle Farbwerte */
+.app-year-badge {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+  color: var(--app-color); background: color-mix(in srgb, var(--app-color) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--app-color) 30%, transparent);
+  padding: 0.2rem 0.55rem; border-radius: 4px;
+}
+
+.app-category { font-size: 0.78rem; color: var(--text-3); font-weight: 500; }
+
+/* Sektions-Titel: fluid-responsiv (2.2rem bis 3.8rem).
+   Farbe kommt aus --app-color, Fallback ist --text-1 */
+.app-section__title {
+  font-size: clamp(2.2rem,5vw,3.8rem); font-weight: 800;
+  letter-spacing: -0.04em; line-height: 1;
+  color: var(--app-color, var(--text-1));
+  margin-bottom: 0.75rem;
+}
+
+.app-section__tagline {
+  font-size: 1rem; color: var(--text-2); font-style: italic;
+  margin-bottom: 1.25rem; line-height: 1.6;
+}
+
+.app-section__desc {
+  font-size: 0.95rem; color: var(--text-2); line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+/* Detailpunkte als vertikale Liste */
+.app-details { display: flex; flex-direction: column; gap: 1.25rem; }
+
+/* Linker Akzentbalken per border-left; color-mix() hält ihn farbharmonisch zur Sektion */
+.app-detail-item {
+  border-left: 2px solid color-mix(in srgb, var(--app-color) 30%, transparent);
+  padding-left: 1rem;
+}
+
+.app-detail-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem; }
+.app-detail-text { font-size: 0.85rem; color: var(--text-2); line-height: 1.7; }
+
+/* Visual card */
+/* Glasartige Karte mit abgerundeten Ecken, halbtransparentem Hintergrund
+   und farbigem Border-Hover-Effekt; overflow: hidden hält .app-visual-glow
+   innerhalb der Card-Grenzen */
+.app-visual-card {
+  position: relative; border: 1px solid var(--border);
+  border-radius: 20px; padding: 2.5rem;
+  background: rgba(14,16,22,0.6);
+  display: flex; flex-direction: column;
+  align-items: center; gap: 1.5rem;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+/* Beim Hover auf die Sektion leuchtet der Card-Rand in --app-color auf (35 % Stärke) */
+.app-section:hover .app-visual-card {
+  border-color: color-mix(in srgb, var(--app-color) 35%, transparent);
+}
+
+.app-icon { width: 100px; height: 100px; }
+.app-metric { text-align: center; }
+
+/* Großer Kennzahlenwert in sektionsspezifischer Akzentfarbe */
+.app-metric-value {
+  display: block; font-size: 2rem; font-weight: 800;
+  letter-spacing: -0.04em; line-height: 1;
+  color: var(--app-color, var(--accent));
+  margin-bottom: 0.35rem;
+}
+
+.app-metric-label { font-size: 0.78rem; color: var(--text-3); line-height: 1.4; }
+
+/* Glow-Overlay innerhalb der Visual Card:
+   Zwei radiale Farbverläufe (oben 18 %, unten 7 %) erzeugen einen
+   inneren Leuchteffekt, der die Card in der Farbe der jeweiligen Sektion
+   atmosphärisch anstrahlt. color-mix() passt Intensität automatisch an --app-color an.
+   pointer-events: none verhindert, dass das Overlay Klicks blockiert */
+.app-visual-glow {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--app-color) 18%, transparent) 0%, transparent 55%),
+    radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--app-color) 7%, transparent) 0%, transparent 50%);
+}
+
+/* ── Responsive ── */
+/* Ab 860px Breite: Zweispaltiges Grid wechselt zu einspaltigem Layout.
+   Visual Card und Text stapeln sich vertikal; Card-Breite auf 320px begrenzt
+   und zentriert, damit sie auf Tablets nicht überdimensioniert wirkt */
+@media (max-width: 860px) {
+  .app-section__inner { grid-template-columns: 1fr; gap: 3rem; }
+  .app-section__visual--left { order: 0; }
+  .app-section__text--right  { order: 1; }
+  .app-visual-card { max-width: 320px; margin: 0 auto; }
+}
+
+/* Ab 600px Breite (Smartphones): Sektions-Padding reduziert,
+   Desktop-Zeilenumbrüche (.br-desk) im Hero-Titel ausgeblendet,
+   damit der Titel auf kleinen Bildschirmen flüssig umbricht */
+@media (max-width: 600px) {
+  .app-section { padding: 60px 22px; }
+  .br-desk { display: none; }
+}

@@ -1,0 +1,253 @@
+/* ── Seiten-Wrapper ── */
+/* Setzt den schwarzen Hintergrund für die gesamte Geschichte-Seite */
+.geschichte { background: var(--black); }
+
+/* ── Hero ── */
+/* Vollbild-Einstiegsbereich mit zentriertem Inhalt und dekorativen Hintergrundelementen */
+.g-hero {
+  position: relative; min-height: 80vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 100px 22px 80px; overflow: hidden;
+}
+
+/* Absolut positionierter Behälter für alle Hintergrund-Dekorationen;
+   pointer-events: none verhindert, dass er Klicks abfängt */
+.g-hero-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+
+/* Gitter-Hintergrund aus zwei überlagerten Gradienten (horizontal + vertikal).
+   mask-image mit radial-gradient blendet das Gitter zu den Rändern hin weich aus,
+   sodass es nur in der Mitte sichtbar ist */
+.g-hero-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%,black 20%,transparent 100%);
+}
+
+/* Gemeinsame Basis für beide Leucht-Orbs:
+   border-radius: 50% = Kreis; filter: blur(90px) = weiches Leuchten */
+.g-hero-orb { position: absolute; border-radius: 50%; filter: blur(90px); }
+
+/* Blauer Orb oben links – treibt langsam hin und her (18s-Zyklus) */
+.g-hero-orb-1 {
+  width: 500px; height: 500px; top: -10%; left: 10%;
+  background: radial-gradient(circle,rgba(41,151,255,0.14) 0%,transparent 70%);
+  animation: gOrb1 18s ease-in-out infinite;
+}
+
+/* Lila Orb unten rechts – treibt gegensätzlich zum blauen Orb (22s-Zyklus) */
+.g-hero-orb-2 {
+  width: 400px; height: 400px; bottom: 0; right: 5%;
+  background: radial-gradient(circle,rgba(110,60,255,0.1) 0%,transparent 70%);
+  animation: gOrb2 22s ease-in-out infinite;
+}
+
+/* Sanfte Schwebe-Bewegung des blauen Orbs: nach rechts unten und zurück */
+@keyframes gOrb1 { 0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-20px)} }
+
+/* Sanfte Schwebe-Bewegung des lila Orbs: spiegelverkehrt zum blauen Orb */
+@keyframes gOrb2 { 0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,20px)} }
+
+/* Inhalt liegt mit z-index: 1 über dem Hintergrund */
+.g-hero-content { position: relative; z-index: 1; }
+
+/* Kleiner Überschrift-Label über dem Titel; erscheint als erstes (0.2s Verzögerung) */
+.g-eyebrow {
+  font-size: 0.72rem; font-weight: 600; color: var(--accent);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 0.75rem; display: block;
+  animation: gFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+}
+
+/* Großer Haupttitel mit fluider Schriftgröße (clamp).
+   background-clip: text + transparent fill erzeugt den Farbverlauf-Text-Effekt */
+.g-hero-title {
+  font-size: clamp(3rem,10vw,7rem); font-weight: 700;
+  letter-spacing: -0.04em; line-height: 0.95;
+  background: linear-gradient(135deg,#f5f5f7 30%,#2997ff 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 1.25rem;
+  animation: gFadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.4s both;
+}
+
+/* Untertitel-Absatz; erscheint zuletzt (0.6s Verzögerung) */
+.g-hero-sub {
+  font-size: clamp(0.95rem,2vw,1.1rem); color: var(--text-2);
+  line-height: 1.75; max-width: 520px; margin: 0 auto;
+  animation: gFadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.6s both;
+}
+
+/* Einblend-Animation von unten: Element startet 16px tiefer und unsichtbar,
+   gleitet dann in die Endposition (verwendet von Eyebrow, Titel und Untertitel) */
+@keyframes gFadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Zeilenumbruch-Helper: nur auf dem Desktop sichtbar, auf Mobilgeräten ausgeblendet */
+.br-desk { display: inline; }
+
+/* ── Timeline ── */
+/* Hintergrund-Sektion mit mehrschichtigem radial-gradient für Tiefenwirkung
+   sowie einem feinen Gitter aus fast-transparenten Linien */
+.g-timeline-section {
+  padding: 80px 22px 100px;
+  background-color: rgba(4, 7, 16, 0.98);
+  background-image:
+    radial-gradient(ellipse 18% 90% at 50% 50%, rgba(41,151,255,0.055) 0%, transparent 70%),
+    radial-gradient(ellipse 65% 35% at 50% 0%,  rgba(41,151,255,0.07)  0%, transparent 65%),
+    radial-gradient(ellipse 65% 35% at 50% 100%,rgba(110,60,255,0.07)  0%, transparent 65%),
+    linear-gradient(rgba(255,255,255,0.013) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.010) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, auto 28px, 28px auto;
+}
+
+/* Begrenzter Maximalbereich der Timeline; relative Positionierung als Anker
+   für die absolute Mittellinie */
+.g-timeline-wrap {
+  max-width: 860px; margin: 0 auto;
+  position: relative;
+  padding: 0 0 40px;
+}
+
+/* ── Timeline-Mittellinie ── */
+/* Exakt 1px breite, absolut positionierte Linie in der Mitte des Containers.
+   linear-gradient von oben nach unten: startet und endet transparent,
+   wechselt in der Mitte von Blau zu Lila – erzeugt ein weiches Aus- und Einblenden.
+   box-shadow fügt einen subtilen blauen Glüheffekt hinzu */
+.g-timeline-line {
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom,
+    transparent,
+    rgba(41,151,255,0.55) 8%,
+    rgba(41,151,255,0.4) 55%,
+    rgba(110,60,255,0.4) 92%,
+    transparent
+  );
+  box-shadow: 0 0 8px rgba(41,151,255,0.15);
+  transform: translateX(-50%);
+}
+
+/* ── Timeline-Einträge ── */
+/* Jeder Eintrag nimmt 45% der Breite ein und wechselt sich links/rechts ab */
+.g-entry {
+  position: relative;
+  width: 45%;
+  margin-bottom: 3.5rem;
+}
+
+/* Linker Eintrag: rechtsbündig, Innenabstand zur Mittellinie hin */
+.g-entry--left  { margin-right: auto; padding-right: 2.5rem; text-align: right; }
+
+/* Rechter Eintrag: linksbündig, Innenabstand zur Mittellinie hin */
+.g-entry--right { margin-left: auto;  padding-left: 2.5rem;  text-align: left; }
+
+/* ── Pulsierender Dot auf der Mittellinie ── */
+/* Kleiner Kreis, der auf der Timeline-Linie sitzt.
+   gDotPulse-Animation erzeugt einen pulsierenden Ring-Effekt (Ripple):
+   box-shadow wächst von 0 auf 5px Radius und wird dabei transparent */
+.g-entry-dot {
+  position: absolute; top: 1.2rem;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--black);
+  animation: gDotPulse 2.8s ease-in-out infinite;
+}
+
+/* Dot beim linken Eintrag: überragt den rechten Rand des Eintrags, liegt auf der Linie */
+.g-entry--left  .g-entry-dot { right: -5px; }
+
+/* Dot beim rechten Eintrag: überragt den linken Rand des Eintrags, liegt auf der Linie */
+.g-entry--right .g-entry-dot { left: -5px;  }
+
+/* Pulsierende Leuchtring-Animation (Ripple):
+   In der Mitte (50%) ist der äußere box-shadow auf 5px Radius gewachsen
+   und dabei vollständig transparent geworden – erzeugt einen sanft ausstrahlenden Ring */
+@keyframes gDotPulse {
+  0%, 100% { box-shadow: 0 0 0 0   rgba(41,151,255,0.45), 0 0 10px rgba(41,151,255,0.5); }
+  50%       { box-shadow: 0 0 0 5px rgba(41,151,255,0),    0 0 20px rgba(41,151,255,0.8); }
+}
+
+/* ── Timeline-Karte ── */
+/* Dunkles, leicht transparentes Panel mit abgerundeten Ecken und weichem Rahmen.
+   overflow: hidden ist notwendig, damit das ::before-Pseudo-Element nicht übersteht */
+.g-card {
+  position: relative; overflow: hidden;
+  background: rgba(10,13,22,0.9);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  transition: border-color 0.25s, background 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+
+/* Shimmer-Linie am oberen Kartenrand als ::before-Pseudo-Element:
+   Nur 1px hoch, liegt bündig am oberen Rand. Die Farbe wird per Klasse
+   je nach Ausrichtung (links/rechts) gesetzt. Sanfter Übergang der Deckkraft bei Hover */
+.g-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  opacity: 0.7; transition: opacity 0.25s;
+}
+
+/* Shimmer-Linie für linke Karten: Gradient läuft von links (Blau) nach rechts (transparent) */
+.g-entry--left  .g-card::before {
+  background: linear-gradient(90deg, rgba(41,151,255,0.7), rgba(110,60,255,0.3), transparent);
+}
+
+/* Shimmer-Linie für rechte Karten: Gradient läuft spiegelverkehrt von rechts (Blau) nach links */
+.g-entry--right .g-card::before {
+  background: linear-gradient(270deg, rgba(41,151,255,0.7), rgba(110,60,255,0.3), transparent);
+}
+
+/* Hover-Zustand: Karte hebt sich leicht an, bekommt blauen Schimmer und helleren Rahmen */
+.g-card:hover {
+  border-color: rgba(41,151,255,0.35);
+  background: rgba(41,151,255,0.05);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(41,151,255,0.08);
+}
+
+/* Shimmer-Linie bei Hover voll sichtbar schalten */
+.g-card:hover::before { opacity: 1; }
+
+/* Jahresangabe mit großer Schrift und Farbverlauf-Text (blau zu lila) */
+.g-year {
+  display: block;
+  font-size: 1.8rem; font-weight: 800; letter-spacing: -0.04em;
+  line-height: 1; margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #60a5fa 0%, #2997ff 45%, #a78bfa 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* Haupttitel des Eintrags */
+.g-card-title {
+  font-size: 1rem; font-weight: 700; color: var(--text-1);
+  letter-spacing: -0.01em; margin-bottom: 0.25rem;
+}
+
+/* Farbiger Schlagwort-Label unter dem Titel */
+.g-card-subtitle {
+  font-size: 0.75rem; color: var(--accent); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 0.6rem;
+}
+
+/* Fließtext der Karte */
+.g-card-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.7; }
+
+/* ── Responsive: Mobilgeräte (max. 700px) ── */
+/* Unter 700px Bildschirmbreite wechselt die Timeline vom zweispaltigen Zickzack-Layout
+   zu einem einspaltigen Layout: Die Mittellinie rückt an den linken Rand,
+   alle Einträge erstrecken sich über die volle Breite und werden linksbündig ausgerichtet.
+   Der Desktop-Zeilenumbruch (.br-desk) wird ausgeblendet. */
+@media (max-width: 700px) {
+  .g-timeline-line { left: 18px; }
+  .g-entry { width: 100%; margin-left: 0; margin-right: 0; }
+  .g-entry--left  { padding-right: 0; padding-left: 44px; text-align: left; }
+  .g-entry--right { padding-left: 44px; }
+  .g-entry--left  .g-entry-dot { right: auto; left: 13px; }
+  .g-entry--right .g-entry-dot { left: 13px; }
+  .br-desk { display: none; }
+}

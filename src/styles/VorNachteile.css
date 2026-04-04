@@ -1,0 +1,275 @@
+/* ── Seitengrundlage ── */
+/* Setzt den Hintergrund der gesamten Vor-/Nachteile-Seite auf die globale schwarz-Variable */
+.vn-page { background: var(--black); }
+
+/* ── Hero ── */
+/* Zentrierter Einstiegsbereich mit Mindesthöhe 80 % des Viewports;
+   overflow:hidden verhindert, dass die animierten Orbs über den Rand ragen */
+.vn-hero {
+  position: relative; min-height: 80vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 100px 22px 80px; overflow: hidden;
+}
+
+/* Hintergrund-Container für die Orb-Elemente; pointer-events:none damit
+   Mausklicks durch den Hintergrund hindurchgehen */
+.vn-hero-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+
+/* Basis-Klasse für alle leuchtenden Kreise (Orbs):
+   border-radius:50% macht das Element rund, filter:blur blendet die Kanten weich */
+.vn-orb { position: absolute; border-radius: 50%; filter: blur(100px); }
+
+/* Grüner Orb oben links: radial-gradient erzeugt einen weichen Lichtschein
+   von grün (12 % Deckkraft) nach transparent; schwebt per vnOrbG-Animation */
+.vn-orb-green {
+  width: 500px; height: 500px; top: -5%; left: -10%;
+  background: radial-gradient(circle,rgba(34,197,94,0.12) 0%,transparent 65%);
+  animation: vnOrbG 18s ease-in-out infinite;
+}
+
+/* Roter Orb oben rechts: gleicher Aufbau wie grüner Orb, aber mit
+   Rotton (10 % Deckkraft) und eigener, leicht versetzter Animation */
+.vn-orb-red {
+  width: 450px; height: 450px; top: -5%; right: -5%;
+  background: radial-gradient(circle,rgba(239,68,68,0.1) 0%,transparent 65%);
+  animation: vnOrbR 22s ease-in-out infinite;
+}
+
+/* Grüner Orb: schaukelt in 18 s leicht nach rechts-unten und zurück */
+@keyframes vnOrbG { 0%,100%{transform:translate(0,0)}50%{transform:translate(30px,20px)} }
+
+/* Roter Orb: schaukelt in 22 s leicht nach links-unten und zurück;
+   unterschiedliche Dauer zu vnOrbG sorgt für ungleichmäßige, organische Bewegung */
+@keyframes vnOrbR { 0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,20px)} }
+
+/* Hero-Inhalt liegt per z-index:1 über den absolut positionierten Orbs */
+.vn-hero-content { position: relative; z-index: 1; }
+
+/* Kleines Überzeilen-Label ("Eyebrow"): winzige Schrift in Akzentfarbe,
+   gesperrte Großbuchstaben; animiert mit vnUp und 0,2 s Verzögerung */
+.vn-eyebrow {
+  font-size: 0.72rem; font-weight: 600; color: var(--accent);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 0.75rem; display: block;
+  animation: vnUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+}
+
+/* Variante: Eyebrow mittig ausrichten (wird im Fazit-Bereich eingesetzt) */
+.vn-eyebrow-center { text-align: center; }
+
+/* Haupt-Überschrift des Heroes: Schriftgröße skaliert flüssig per clamp()
+   zwischen 3 rem und 7 rem; Verlaufstext via -webkit-background-clip:text und
+   -webkit-text-fill-color:transparent — macht den Text zum Hintergrundausschnitt;
+   kommt 0,4 s verzögert mit vnUp herein */
+.vn-hero-title {
+  font-size: clamp(3rem,10vw,7rem); font-weight: 700;
+  letter-spacing: -0.04em; line-height: 0.95;
+  background: linear-gradient(135deg,#f5f5f7 30%,#2997ff 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 1.25rem;
+  animation: vnUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.4s both;
+}
+
+/* Untertitel unter der Hauptüberschrift: fließend skalierte Schrift,
+   auf 500 px begrenzt und zentriert; erscheint 0,6 s nach Laden */
+.vn-hero-sub {
+  font-size: clamp(0.95rem,2vw,1.1rem); color: var(--text-2);
+  line-height: 1.75; max-width: 500px; margin: 0 auto;
+  animation: vnUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.6s both;
+}
+
+/* Einblend- und Hochbewegungs-Animation: Element startet unsichtbar 16 px
+   unterhalb seiner Endposition und gleitet in die finale Lage */
+@keyframes vnUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Zeilenumbruch nur auf Desktop sichtbar (wird bei 760 px ausgeblendet) */
+.br-desk { display: inline; }
+
+/* ── Split Section ── */
+/* Zweigeteilter Vergleichsbereich: dunkler Hintergrund mit mehrfach
+   geschichteten radial-gradients als subtile Farbakzente links (grün),
+   rechts (rot) und mittig unten (blau); zusätzlich ein feines Liniengitter
+   aus zwei linear-gradients — horizontal und vertikal, je 1 px breit */
+.vn-split-section {
+  padding: 90px 0;
+  background-color: rgba(6, 9, 18, 0.95);
+  background-image:
+    radial-gradient(ellipse 55% 70% at 5% 50%,  rgba(34,197,94,0.09)  0%, transparent 65%),
+    radial-gradient(ellipse 55% 70% at 95% 50%,  rgba(239,68,68,0.08)  0%, transparent 65%),
+    radial-gradient(ellipse 30% 40% at 50% 100%, rgba(41,151,255,0.05) 0%, transparent 60%),
+    linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.013) 1px, transparent 1px);
+  /* Die Gitter-Linien werden mit background-size auf 28 px Raster gestreckt */
+  background-size: 100% 100%, 100% 100%, 100% 100%, auto 28px, 28px auto;
+}
+
+/* Dreispalten-Grid: linke Spalte (Pro), 60 px breite Trennmittel-Spalte,
+   rechte Spalte (Con); align-items:start hält beide Listen oben bündig */
+.vn-split-wrap {
+  max-width: 1100px; margin: 0 auto; padding: 0 22px;
+  display: grid; grid-template-columns: 1fr 60px 1fr; gap: 0; align-items: start;
+}
+
+/* ── Spaltenköpfe ── */
+/* Kopfbereich jeder Vergleichsspalte: Icon/Zeichen + Text nebeneinander */
+.vn-col-header {
+  display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 2.5rem;
+}
+
+/* Großes „+" bzw. „–"-Zeichen als visueller Anker für die jeweilige Spalte */
+.vn-col-sign {
+  font-size: 3rem; font-weight: 900; line-height: 1; flex-shrink: 0; margin-top: -4px;
+}
+
+/* Grüne Farbe für das Pro-Zeichen */
+.vn-sign-pro { color: rgba(34,197,94,0.8); }
+
+/* Rote Farbe für das Con-Zeichen */
+.vn-sign-con { color: rgba(239,68,68,0.7); }
+
+/* Eyebrow-Label innerhalb der Spaltenköpfe */
+.vn-col-eyebrow {
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; margin-bottom: 0.35rem;
+}
+
+/* Farbvarianten der Spalten-Eyebrows */
+.vn-eyebrow-pro { color: rgba(34,197,94,0.8); }
+.vn-eyebrow-con { color: rgba(239,68,68,0.8); }
+
+/* Überschrift der Spalte: flüssig skalierte Schrift */
+.vn-col-title {
+  font-size: clamp(1.2rem,2.5vw,1.7rem); font-weight: 700;
+  letter-spacing: -0.02em; line-height: 1.1; color: var(--text-1);
+}
+
+/* ── Listen ── */
+/* Beide Vor-/Nachteile-Listen: kein Standard-Aufzählungszeichen,
+   vertikaler Flex-Container; 1 px Lücke erzeugt den Trennlinien-Effekt
+   zusammen mit den border-top-Regeln der Listenelemente */
+.vn-list { list-style: none; display: flex; flex-direction: column; gap: 1px; }
+
+/* Einzelnes Listenelement: obere Trennlinie + sanfter Hintergrundübergang beim Hover */
+.vn-item {
+  border-top: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+/* Letztes Element erhält zusätzlich eine untere Trennlinie */
+.vn-item:last-child { border-bottom: 1px solid var(--border); }
+
+/* Innenabstand des Listeninhalts */
+.vn-item-inner { padding: 1.25rem 0; }
+
+/* Farbiger linker Akzentstreifen unterscheidet Pro- und Con-Einträge visuell */
+.vn-item-pro .vn-item-inner { border-left: 2px solid rgba(34,197,94,0.45); padding-left: 1rem; }
+.vn-item-con .vn-item-inner { border-left: 2px solid rgba(239,68,68,0.4);  padding-left: 1rem; }
+
+/* Hover-Leuchteffekt: leichter grüner bzw. roter Hauch als Hintergrund */
+.vn-item-pro:hover { background: rgba(34,197,94,0.04); }
+.vn-item-con:hover { background: rgba(239,68,68,0.04); }
+
+/* Titel jedes Listeneintrags */
+.vn-item-title {
+  font-size: 0.92rem; font-weight: 700; color: var(--text-1);
+  letter-spacing: -0.01em; margin-bottom: 0.4rem;
+}
+
+/* Pro-Titel leicht grünlich getönt, Con-Titel leicht rötlich getönt */
+.vn-item-pro .vn-item-title { color: rgba(220,255,230,0.92); }
+.vn-item-con .vn-item-title { color: rgba(255,220,220,0.92); }
+
+/* Beschreibungstext unterhalb des Eintrags-Titels */
+.vn-item-text { font-size: 0.85rem; color: var(--text-2); line-height: 1.7; }
+
+/* ── Mittlerer Trenner ── */
+/* Schmale 60-px-Spalte zwischen Pro und Con: vertikaler Flex-Container
+   mit einer Linie, einem gedrehten Label und weiterer Linie */
+.vn-divider {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  padding-top: 80px; gap: 0.75rem;
+}
+
+/* Die vertikale Trennlinie: 1 px breit, Farbverlauf von grün (oben) nach rot (unten)
+   symbolisiert den Übergang zwischen Vor- und Nachteilen */
+.vn-divider-line {
+  width: 1px; flex: 1; min-height: 40px;
+  background: linear-gradient(to bottom, rgba(34,197,94,0.25), rgba(239,68,68,0.2));
+}
+
+/* "VS"-Label in der Mitte der Trennlinie: writing-mode:vertical-rl dreht
+   den Text um 90 Grad, sodass er senkrecht lesbar ist */
+.vn-divider-label {
+  font-size: 0.72rem; font-weight: 700; color: var(--text-2);
+  text-transform: uppercase; letter-spacing: 0.1em; writing-mode: vertical-rl;
+}
+
+/* ── Fazit ── */
+/* Abschlussbereich mit blauem Bloom oben (radial-gradient) sowie zwei kleineren
+   grünen und roten Schimmern unten an den Ecken; horizontale Gitterlinie
+   (28 px Raster) als dezentes Strukturelement */
+.vn-fazit-section {
+  padding: 90px 0;
+  background-color: rgba(4, 6, 16, 0.96);
+  background-image:
+    radial-gradient(ellipse 60% 70% at 50% 0%,   rgba(41,151,255,0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 50% at 20% 100%,  rgba(34,197,94,0.05)  0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 80% 100%,  rgba(239,68,68,0.05)  0%, transparent 60%),
+    linear-gradient(rgba(255,255,255,0.014) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, auto 28px;
+}
+
+/* Zentrierter, schmaler Inhalts-Container für das Fazit */
+.vn-fazit-wrap { max-width: 692px; margin: 0 auto; padding: 0 22px; text-align: center; }
+
+/* Fazit-Überschrift: flüssig skaliert zwischen 1,8 rem und 2,8 rem */
+.vn-fazit-title {
+  font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 700;
+  letter-spacing: -0.03em; line-height: 1.05; color: var(--text-1);
+  margin-bottom: 1.5rem;
+}
+
+/* Fließtext des Fazits */
+.vn-fazit-body {
+  font-size: 1rem; color: var(--text-2); line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+/* Hervorgehobene Textstellen innerhalb des Fazit-Textes:
+   font-style:normal hebt die Browser-Kursivstellung von <em> auf */
+.vn-fazit-body em { color: var(--text-1); font-style: normal; }
+
+/* Blaue Verdict-Box: abgerundete Karte mit blauem Rahmen und
+   leicht blau getöntem Hintergrund als abschließende Aussage */
+.vn-fazit-verdict {
+  margin-top: 2.5rem; background: rgba(41,151,255,0.06);
+  border: 1px solid rgba(41,151,255,0.2); border-radius: 12px;
+  padding: 1.75rem;
+}
+
+/* Winziges Label über dem Verdict-Text (z. B. "Fazit") */
+.vn-verdict-label {
+  display: block; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--accent); margin-bottom: 0.6rem;
+}
+
+/* Eigentlicher Verdict-Text in der blauen Karte */
+.vn-verdict-text { font-size: 0.925rem; color: var(--text-2); line-height: 1.75; }
+
+/* ── Responsive ── */
+/* Unterhalb von 760 px (Tablet/Mobil) wird das dreispaltige Grid
+   auf eine einzige Spalte umgestellt; der Trenner verschwindet, da er
+   im Einspaltenlayout keinen Platz hat; die Con-Spalte erhält Abstand
+   nach oben, damit die beiden Blöcke nicht zusammenkleben;
+   Desktop-Zeilenumbrüche werden ausgeblendet, um Texte mobil neu fließen zu lassen */
+@media (max-width: 760px) {
+  .vn-split-wrap { grid-template-columns: 1fr; }
+  .vn-divider { display: none; }
+  .vn-col-con { margin-top: 3rem; }
+  .br-desk { display: none; }
+}

@@ -1,0 +1,324 @@
+/* ============================================================
+   Kontakt.css — Kontaktseite des Abschlussprojekts
+   Design: Apple-inspiriert, dunkel, minimalistisch
+   ============================================================ */
+
+/* ---------- Seitengrundlage ---------- */
+.kontakt-page {
+  background-color: var(--black);
+  color: var(--text-1);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI',
+    Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  padding-top: 64px; /* Höhe der fixierten Navbar */
+}
+
+/* ---------- Hero ---------- */
+.kontakt-hero {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 96px 24px 80px;
+  text-align: center;
+}
+
+.kontakt-eyebrow {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 20px;
+}
+
+.kontakt-title {
+  font-size: clamp(56px, 8vw, 96px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--text-1);
+  margin: 0 0 28px;
+}
+
+.kontakt-subtitle {
+  font-size: clamp(17px, 2vw, 21px);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-2);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+/* ---------- Abschnittstrennlinie ---------- */
+.kontakt-page .kontakt-hero + .kontakt-section {
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- Inhaltsabschnitte ---------- */
+.kontakt-section {
+  border-top: 1px solid var(--border);
+  padding: 72px 24px;
+}
+
+.kontakt-section--last {
+  padding-bottom: 120px;
+}
+
+.kontakt-section-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 0 64px;
+  align-items: start;
+}
+
+@media (max-width: 700px) {
+  .kontakt-section-inner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+/* ---------- Abschnitts-Label (linke Spalte) ---------- */
+.kontakt-section-label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin: 0;
+  padding-top: 4px;
+}
+
+/* ---------- Fließtext ---------- */
+.kontakt-prose {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.kontakt-prose p {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text-2);
+  margin: 0;
+}
+
+/* ---------- Metadaten-Tabelle (Angaben) ---------- */
+.kontakt-meta-list {
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.kontakt-meta-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 0 24px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.15s ease;
+}
+
+.kontakt-meta-row:last-child {
+  border-bottom: none;
+}
+
+.kontakt-meta-row:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.kontakt-meta-row:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.kontakt-meta-key {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-3);
+  letter-spacing: 0.01em;
+}
+
+.kontakt-meta-value {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-1);
+  margin: 0;
+}
+
+/* ---------- Link ---------- */
+.kontakt-link {
+  color: var(--accent);
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+.kontakt-link:hover {
+  opacity: 0.75;
+}
+
+/* ---------- Feedback-Karte ---------- */
+.kontakt-feedback-card {
+  background-color: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+.kontakt-feedback-text {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text-2);
+  margin: 0;
+}
+
+/* ---------- CTA-Button ---------- */
+.kontakt-cta {
+  display: inline-block;
+  background-color: var(--accent);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  padding: 11px 22px;
+  border-radius: 980px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.kontakt-cta:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
+.kontakt-cta:active {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
+
+/* ============================================================
+   Kontaktformular — eigenes Design
+   ============================================================ */
+
+/* Formular-Container */
+.kontakt-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Einzelne Formulargruppe (Label + Input) */
+.kontakt-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Label */
+.kontakt-form-label {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* Input-Felder */
+.kontakt-form-input,
+.kontakt-form-textarea {
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-1);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.5;
+  padding: 12px 16px;
+  resize: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Fokus-Zustand */
+.kontakt-form-input:focus,
+.kontakt-form-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background-color: rgba(255, 255, 255, 0.07);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* Platzhalter-Farbe */
+.kontakt-form-input::placeholder,
+.kontakt-form-textarea::placeholder {
+  color: var(--text-3);
+  opacity: 0.6;
+}
+
+/* Textarea – höhenresizeable nach unten */
+.kontakt-form-textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+/* Absende-Button */
+.kontakt-form-submit {
+  align-items: center;
+  align-self: flex-start;
+  background-color: var(--accent);
+  border: none;
+  border-radius: 980px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  gap: 8px;
+  letter-spacing: 0.01em;
+  padding: 11px 24px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.kontakt-form-submit:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
+.kontakt-form-submit:active {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
+
+/* Fehlermeldung */
+.kontakt-form-error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
+  color: #f87171;
+  font-size: 14px;
+  margin: 0;
+  padding: 12px 16px;
+}
+
+/* Erfolgsmeldung */
+.kontakt-form-success {
+  align-items: center;
+  background-color: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 12px;
+  color: #4ade80;
+  display: flex;
+  font-size: 16px;
+  font-weight: 500;
+  gap: 12px;
+  padding: 20px 24px;
+}

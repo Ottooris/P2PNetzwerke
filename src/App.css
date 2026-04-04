@@ -1,0 +1,88 @@
+.App {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* ── Fixed ambient layer – visible on every page, across all scroll positions ── */
+.ambient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.amb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  animation: ambDrift 20s ease-in-out infinite;
+}
+
+/* Top-left — blue */
+.amb-1 {
+  width: 700px; height: 700px;
+  top: -200px; left: -200px;
+  background: radial-gradient(circle, rgba(41,151,255,0.1) 0%, transparent 65%);
+  animation-duration: 22s;
+}
+
+/* Top-right — purple */
+.amb-2 {
+  width: 600px; height: 600px;
+  top: -100px; right: -150px;
+  background: radial-gradient(circle, rgba(110,60,255,0.08) 0%, transparent 65%);
+  animation-duration: 28s;
+  animation-delay: -8s;
+  animation-name: ambDrift2;
+}
+
+/* Middle — cyan accent */
+.amb-3 {
+  width: 500px; height: 500px;
+  top: 40%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(0,180,255,0.06) 0%, transparent 65%);
+  animation-duration: 18s;
+  animation-delay: -14s;
+}
+
+/* Bottom-right — blue/indigo */
+.amb-4 {
+  width: 650px; height: 650px;
+  bottom: -200px; right: -100px;
+  background: radial-gradient(circle, rgba(60,100,255,0.09) 0%, transparent 65%);
+  animation-duration: 24s;
+  animation-delay: -5s;
+  animation-name: ambDrift2;
+}
+
+/* Bottom-left — purple */
+.amb-5 {
+  width: 500px; height: 500px;
+  bottom: -100px; left: -100px;
+  background: radial-gradient(circle, rgba(130,50,255,0.07) 0%, transparent 65%);
+  animation-duration: 30s;
+  animation-delay: -20s;
+}
+
+@keyframes ambDrift {
+  0%, 100% { transform: translate(0, 0); }
+  33%       { transform: translate(60px, -40px); }
+  66%       { transform: translate(-40px, 60px); }
+}
+
+@keyframes ambDrift2 {
+  0%, 100% { transform: translate(0, 0); }
+  33%       { transform: translate(-70px, 50px); }
+  66%       { transform: translate(50px, -60px); }
+}
+
+/* Seiteninhalt über dem Ambient-Layer, aber Navbar bleibt unberührt
+   (Navbar ist position:fixed mit eigenem z-index:100 — würde sonst
+   durch den Seiteninhalt überdeckt, da siblings mit gleichem z-index
+   nach DOM-Reihenfolge gewinnen) */
+.App > *:not(.ambient-bg):not(.cookie-banner):not(.navbar) {
+  position: relative;
+  z-index: 1;
+}
