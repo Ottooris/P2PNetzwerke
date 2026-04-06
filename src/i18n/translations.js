@@ -554,6 +554,12 @@ const t = {
       formSuccess:   'Danke! Deine Nachricht wurde gesendet.',
       formError:     'Bitte fülle alle Felder aus.',
     },
+    cookie: {
+      text:    'Diese Website verwendet keine Tracking-Cookies. Nur technisch notwendige Cookies werden eingesetzt.',
+      note:    'Dieses Projekt ist eine Abschlussarbeit und erhebt keinerlei personenbezogene Daten.',
+      accept:  'Akzeptieren',
+      decline: 'Ablehnen',
+    },
   },
 
   /* ────────────────────────────── ITALIANO ───────────────────────────── */
@@ -1111,6 +1117,12 @@ const t = {
       formSuccess:   'Grazie! Il tuo messaggio è stato inviato.',
       formError:     'Per favore compila tutti i campi.',
     },
+    cookie: {
+      text:    'Questo sito non usa cookie di tracciamento. Vengono usati solo i cookie necessari per il funzionamento.',
+      note:    'Questo progetto è un lavoro scolastico e non raccoglie dati personali.',
+      accept:  'Accetta',
+      decline: 'Rifiuta',
+    },
   },
 
   /* ────────────────────────────── ENGLISH ────────────────────────────── */
@@ -1667,6 +1679,12 @@ const t = {
       formSubmit:    'Send',
       formSuccess:   'Thank you! Your message has been sent.',
       formError:     'Please fill in all fields.',
+    },
+    cookie: {
+      text:    'This website does not use tracking cookies. Only technically necessary cookies are used.',
+      note:    'This project is a school project and does not collect any personal data.',
+      accept:  'Accept',
+      decline: 'Decline',
     },
   },
 };

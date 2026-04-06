@@ -22,6 +22,7 @@ function LangLayout() {
   }
   return (
     <LangContext.Provider value={safeLang}>
+      <CookieBanner />
       <Outlet />
     </LangContext.Provider>
   );
@@ -60,7 +61,6 @@ function App() {
           <Route path="*" element={<Navigate to="/de" replace />} />
         </Routes>
 
-        <CookieBanner />
       </div>
     </BrowserRouter>
   );
