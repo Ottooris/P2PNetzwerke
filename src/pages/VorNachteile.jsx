@@ -77,7 +77,7 @@ export default function VorNachteile() {
             <ul className="vn-list">
               {vn.vorteile.map((item, i) => (
                 <li
-                  key={item.titel}
+                  key={i}
                   className="vn-item vn-item-pro"
                   data-reveal
                   data-delay={i}
@@ -112,7 +112,7 @@ export default function VorNachteile() {
             <ul className="vn-list">
               {vn.nachteile.map((item, i) => (
                 <li
-                  key={item.titel}
+                  key={i}
                   className="vn-item vn-item-con"
                   data-reveal
                   data-delay={i}

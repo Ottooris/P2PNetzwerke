@@ -5,10 +5,10 @@ import '../styles/Netzwerk.css';
 import { useLang } from '../context/LangContext';
 import t from '../i18n/translations';
 
-/* ── SVG canvas size ── */
+/* ── Abmessungen des SVG-Zeichenbereichs und Koordinaten des Mittelpunkts ── */
 const W = 520, H = 430, CX = 260, CY = 215;
 
-/* ── Node position helpers ── */
+/* ── Hilfsfunktionen zur Berechnung gleichmäßiger Knotenverteilungen ── */
 
 /**
  * Berechnet gleichmäßig verteilte Knotenpositionen auf einem Kreis.
@@ -32,7 +32,7 @@ function circleNodes(n, r = 155) {
  * @returns {Array}  - Array mit Knotenobjekten, Server hat isServer: true
  */
 function starNodes(n) {
-  // id 0 = server at center, id 1..n-1 = clients in circle
+  // Knoten 0 ist der zentrale Server (Mittelpunkt), Knoten 1..n−1 sind Clients auf dem Außenkreis
   const nodes = [{ id: 0, x: CX, y: CY, label: 'Server', isServer: true }];
   for (let i = 1; i < n; i++) {
     const a = ((i - 1) / (n - 1)) * 2 * Math.PI - Math.PI / 2;
@@ -54,8 +54,8 @@ function busNodes(n) {
   }));
 }
 
-// Root(0) → (1,2,3) · 1→(4,5) · 2→(6,7) · 3 = leaf
-// Feste Positionen für die Baum-Topologie: 3 Ebenen, manuell ausbalanciert
+// Baumstruktur: Wurzel(0) → Kinder(1,2,3) → Blätter(4–7) — 3 Ebenen, manuell ausbalanciert
+// Feste Koordinaten für die Baum-Topologie, damit das Layout immer gleichmäßig wirkt
 const TREE_NODES = [
   { id: 0, x: 260, y:  55, label: 'P1', isServer: true },
   { id: 1, x: 100, y: 185, label: 'P2' },
@@ -68,7 +68,7 @@ const TREE_NODES = [
 ];
 const TREE_EDGES = [[0,1],[0,2],[0,3],[1,4],[1,5],[2,6],[2,7]];
 
-/* ── Edge generators ── */
+/* ── Funktionen zur Erzeugung der Kantenlisten je nach Topologie ── */
 function fullMeshEdges(n) {
   const e = [];
   for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) e.push([i, j]);
@@ -104,7 +104,7 @@ const TOPO_LAYOUT = [
   { id: 'star',     resilience: 1, color: '#ef4444', nodes: starNodes(8),   edges: starEdges(8)     },
 ];
 
-/* ── Connectivity ── */
+/* ── Graphenanalyse: Konnektivität und Ausfallsimulation per BFS ── */
 
 /**
  * Berechnet die Größe der größten zusammenhängenden Komponente im Graphen
@@ -144,7 +144,7 @@ function largestComponent(allIds, edges, dead) {
   return max;
 }
 
-/* ── Resilience dots ── */
+/* ── Visualisierungskomponente für den Resilience-Wert als Punkt-Reihe ── */
 
 /**
  * Stellt den Resilience-Wert einer Topologie als Reihe von fünf Punkten dar.
@@ -167,7 +167,7 @@ function ResilienceDots({ value, color }) {
   );
 }
 
-/* ── Component ── */
+/* ── Hauptkomponente der interaktiven Netzwerk-Simulationsseite ── */
 
 /**
  * Hauptkomponente der Netzwerk-Seite.

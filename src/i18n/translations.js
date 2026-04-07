@@ -1,6 +1,15 @@
+/**
+ * translations.js
+ *
+ * Zentrale Übersetzungsdatei für alle drei Sprachen: Deutsch (de), Italienisch (it) und Englisch (en).
+ * Jede Sprache ist ein eigener Schlüssel im `t`-Objekt und enthält identisch strukturierte Unterabschnitte.
+ * Die Komponenten greifen per `t[lang].seitenname` auf die Texte zu — so müssen
+ * beim Hinzufügen einer Sprache nur hier neue Einträge ergänzt werden, nicht in den Komponenten.
+ */
 const t = {
   /* ────────────────────────────── DEUTSCH ────────────────────────────── */
   de: {
+    /* Navigationsleiste: Labels für alle Menüpunkte */
     nav: {
       start:         'Start',
       funktionsweise:'Funktionsweise',
@@ -356,6 +365,7 @@ const t = {
         },
       ],
     },
+    /* Fußzeile: Spaltenbeschriftungen und Link-Labels */
     footer: {
       projekt:    'Projekt',
       start:      'Start',
@@ -364,6 +374,7 @@ const t = {
       impressum:  'Impressum',
       copy:       'Abschlussprojekt',
     },
+    /* Netzwerk-Simulator: Texte für den interaktiven Topologie-Simulator */
     simulator: {
       eyebrow:     'Interaktiver Simulator',
       title:       'Netzwerk-Simulator',
@@ -554,6 +565,7 @@ const t = {
       formSuccess:   'Danke! Deine Nachricht wurde gesendet.',
       formError:     'Bitte fülle alle Felder aus.',
     },
+    /* Cookie-Banner: Hinweistext, Notiz und Button-Beschriftungen */
     cookie: {
       text:    'Diese Website verwendet keine Tracking-Cookies. Nur technisch notwendige Cookies werden eingesetzt.',
       note:    'Dieses Projekt ist eine Abschlussarbeit und erhebt keinerlei personenbezogene Daten.',

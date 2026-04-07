@@ -24,7 +24,7 @@ export default function Geschichte() {
   const heroRef     = useReveal();
   const timelineRef = useReveal();
 
-  /* Navbar scroll shadow */
+  /* Fügt der Navbar einen Schatten hinzu, sobald der Nutzer nach unten scrollt */
   useEffect(() => {
     const nav = document.querySelector('.navbar');
     const onScroll = () => nav?.classList.toggle('scrolled', window.scrollY > 10);
@@ -59,7 +59,7 @@ export default function Geschichte() {
       {/* Bereich mit der vertikalen Zeitleiste aller historischen Einträge */}
       <section className="g-timeline-section">
         <div className="g-timeline-wrap" ref={timelineRef}>
-          {/* Central vertical line */}
+          {/* Zentrale vertikale Linie, die die gesamte Zeitleiste durchzieht */}
           <div className="g-timeline-line" aria-hidden="true" />
 
           {/*
@@ -77,10 +77,10 @@ export default function Geschichte() {
               data-reveal
               data-delay={Math.min(i % 3, 4)}
             >
-              {/* Connector dot on the central line */}
+              {/* Kreisförmiger Verbindungspunkt auf der Mittellinie — markiert den Zeitpunkt */}
               <div className="g-entry-dot" aria-hidden="true" />
 
-              {/* Card */}
+              {/* Inhaltskarte mit Jahr, Titel, Untertitel und Beschreibungstext */}
               <div className="g-card">
                 <span className="g-year">{entry.year}</span>
                 <h3 className="g-card-title">{entry.title}</h3>

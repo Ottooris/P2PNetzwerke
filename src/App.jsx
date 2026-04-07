@@ -11,6 +11,7 @@ import Impressum      from './pages/Impressum';
 import Kontakt        from './pages/Kontakt';
 import NotFound       from './pages/NotFound';
 import CookieBanner   from './components/CookieBanner';
+import ScrollToTop    from './components/ScrollToTop';
 
 const VALID_LANGS = ['de', 'it', 'en'];
 
@@ -22,6 +23,7 @@ function LangLayout() {
   }
   return (
     <LangContext.Provider value={safeLang}>
+      <ScrollToTop />
       <CookieBanner />
       <Outlet />
     </LangContext.Provider>
