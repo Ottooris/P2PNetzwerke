@@ -1,0 +1,102 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\maxie\\Documents\\GitHub\\P2PNetzwerke\\PeerChat\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{5D892066-2B00-1063-9AEB-1EFB793505CE}|PeerChat\\PeerChat.csproj|c:\\users\\maxie\\documents\\github\\p2pnetzwerke\\peerchat\\peerchat\\p2pmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D892066-2B00-1063-9AEB-1EFB793505CE}|PeerChat\\PeerChat.csproj|solutionrelative:peerchat\\p2pmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D892066-2B00-1063-9AEB-1EFB793505CE}|PeerChat\\PeerChat.csproj|c:\\users\\maxie\\documents\\github\\p2pnetzwerke\\peerchat\\peerchat\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{5D892066-2B00-1063-9AEB-1EFB793505CE}|PeerChat\\PeerChat.csproj|solutionrelative:peerchat\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D892066-2B00-1063-9AEB-1EFB793505CE}|PeerChat\\PeerChat.csproj|c:\\users\\maxie\\documents\\github\\p2pnetzwerke\\peerchat\\peerchat\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D892066-2B00-1063-9AEB-1EFB793505CE}|PeerChat\\PeerChat.csproj|solutionrelative:peerchat\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D892066-2B00-1063-9AEB-1EFB793505CE}|PeerChat\\PeerChat.csproj|c:\\users\\maxie\\documents\\github\\p2pnetzwerke\\peerchat\\peerchat\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{5D892066-2B00-1063-9AEB-1EFB793505CE}|PeerChat\\PeerChat.csproj|solutionrelative:peerchat\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5D892066-2B00-1063-9AEB-1EFB793505CE}|PeerChat\\PeerChat.csproj|c:\\users\\maxie\\documents\\github\\p2pnetzwerke\\peerchat\\peerchat\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5D892066-2B00-1063-9AEB-1EFB793505CE}|PeerChat\\PeerChat.csproj|solutionrelative:peerchat\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "App.xaml",
+              "DocumentMoniker": "C:\\Users\\maxie\\Documents\\GitHub\\P2PNetzwerke\\PeerChat\\PeerChat\\App.xaml",
+              "RelativeDocumentMoniker": "PeerChat\\App.xaml",
+              "ToolTip": "C:\\Users\\maxie\\Documents\\GitHub\\P2PNetzwerke\\PeerChat\\PeerChat\\App.xaml",
+              "RelativeToolTip": "PeerChat\\App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-02-20T19:43:52.85Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AssemblyInfo.cs",
+              "DocumentMoniker": "C:\\Users\\maxie\\Documents\\GitHub\\P2PNetzwerke\\PeerChat\\PeerChat\\AssemblyInfo.cs",
+              "RelativeDocumentMoniker": "PeerChat\\AssemblyInfo.cs",
+              "ToolTip": "C:\\Users\\maxie\\Documents\\GitHub\\P2PNetzwerke\\PeerChat\\PeerChat\\AssemblyInfo.cs",
+              "RelativeToolTip": "PeerChat\\AssemblyInfo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-20T19:43:51.822Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "P2PManager.cs",
+              "DocumentMoniker": "C:\\Users\\maxie\\Documents\\GitHub\\P2PNetzwerke\\PeerChat\\PeerChat\\P2PManager.cs",
+              "RelativeDocumentMoniker": "PeerChat\\P2PManager.cs",
+              "ToolTip": "C:\\Users\\maxie\\Documents\\GitHub\\P2PNetzwerke\\PeerChat\\PeerChat\\P2PManager.cs",
+              "RelativeToolTip": "PeerChat\\P2PManager.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAwwEwAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-20T15:53:51.702Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\maxie\\Documents\\GitHub\\P2PNetzwerke\\PeerChat\\PeerChat\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "PeerChat\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\maxie\\Documents\\GitHub\\P2PNetzwerke\\PeerChat\\PeerChat\\MainWindow.xaml",
+              "RelativeToolTip": "PeerChat\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-02-20T15:48:18.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\maxie\\Documents\\GitHub\\P2PNetzwerke\\PeerChat\\PeerChat\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "PeerChat\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\maxie\\Documents\\GitHub\\P2PNetzwerke\\PeerChat\\PeerChat\\MainWindow.xaml.cs",
+              "RelativeToolTip": "PeerChat\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAQwDEAAABHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-20T15:48:17.249Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

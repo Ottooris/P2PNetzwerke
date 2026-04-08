@@ -1,0 +1,58 @@
+<!--
+    MainWindow.xaml – Benutzeroberfläche (UI) des Hauptfensters
+    Hier wird das Layout der App mit WPF-XAML definiert.
+    Die Logik dahinter steht in MainWindow.xaml.cs (Code-Behind).
+-->
+<Window x:Class="PeerChat.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PeerChat" Height="550" Width="450">
+
+    <!-- StackPanel stapelt alle UI-Elemente vertikal untereinander -->
+    <StackPanel Margin="10">
+
+        <!-- Benutzernameneingabe: wird beim Senden vor die Nachricht gesetzt -->
+        <TextBlock Text="Benutzername:"/>
+        <TextBox x:Name="UsernameBox" Text="User1"/>
+
+        <!-- Zeigt die eigene lokale IP-Adresse an (wird im Code-Behind gesetzt) -->
+        <TextBlock Text="Eigene IP:" Margin="0,5,0,0"/>
+        <TextBlock x:Name="LocalIpText" Foreground="DarkGreen"/>
+
+        <Separator Margin="0,10,0,10"/>
+
+        <!-- IP-Adresse des anderen Peers, zu dem man sich verbinden möchte -->
+        <TextBlock Text="IP zum Verbinden:"/>
+        <TextBox x:Name="IpBox" Text="127.0.0.1"/>
+
+        <!-- Port: muss auf beiden Seiten (Host und Client) gleich sein -->
+        <TextBlock Text="Port:"/>
+        <TextBox x:Name="PortBox" Text="5000"/>
+
+        <!-- Drei Buttons nebeneinander: Host starten, Verbinden, Trennen -->
+        <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
+            <!-- Host_Click: startet einen TCP-Listener und wartet auf Verbindung -->
+            <Button Content="Host starten" Width="120" Margin="0,0,5,0" Click="Host_Click"/>
+            <!-- Connect_Click: verbindet sich mit dem angegebenen Host -->
+            <Button Content="Verbinden" Width="100" Margin="0,0,5,0" Click="Connect_Click"/>
+            <!-- Disconnect_Click: trennt die aktive Verbindung -->
+            <Button Content="Disconnect" Width="100" Click="Disconnect_Click"/>
+        </StackPanel>
+
+        <!-- Statusanzeige: zeigt z.B. "Verbunden!" oder "Warte auf Verbindung..." -->
+        <TextBlock Text="Status:"/>
+        <TextBlock x:Name="StatusText" Foreground="Blue"/>
+
+        <Separator Margin="0,10,0,10"/>
+
+        <!-- Chatbereich: empfangene und gesendete Nachrichten werden hier aufgelistet -->
+        <ListBox x:Name="ChatBox" Height="200"/>
+
+        <!-- Eingabefeld für die Nachricht, die gesendet werden soll -->
+        <TextBox x:Name="MessageBox" Margin="0,5,0,5"/>
+
+        <!-- Send_Click: sendet die eingegebene Nachricht an den verbundenen Peer -->
+        <Button Content="Senden" Click="Send_Click"/>
+
+    </StackPanel>
+</Window>
